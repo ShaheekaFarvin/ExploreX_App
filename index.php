@@ -33,9 +33,13 @@ $sql = "
 $result = $conn->query($sql);
 
 if ($result) {
+
     while ($row = $result->fetch_assoc()) {
+
         $adventures[] = $row;
+
     }
+
 }
 
 ?>
@@ -47,341 +51,648 @@ if ($result) {
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>ExploreX | Discover Your Next Adventure</title>
+    <title>
+        ExploreX | Discover Your Next Adventure
+    </title>
 
-    <link rel="stylesheet"
-          href="assets/css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="assets/css/style.css"
+    >
+
+
+    <!-- =====================================
+         FIXED NAVIGATION
+    ====================================== -->
+
+    <style>
+
+        .navbar {
+
+            position: fixed !important;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            width: 100%;
+
+            z-index: 9999;
+
+        }
+
+
+        body {
+
+            padding-top: 0;
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-    <!-- Navigation -->
 
-    <nav class="navbar">
+<!-- =====================================
+     NAVIGATION
+===================================== -->
 
-        <a href="index.php" class="logo">
-            Explore<span>X</span>
-        </a>
-
-        <div class="nav-links">
-
-            <a href="index.php">Home</a>
-
-            <a href="#adventures">Adventures</a>
-
-            <a href="#about">About</a>
-
-            <?php if (isset($_SESSION["user_id"])): ?>
-
-                <?php if ($_SESSION["role"] === "ADMIN"): ?>
-
-                    <a href="admin/dashboard.php">
-                        Dashboard
-                    </a>
-
-                <?php else: ?>
-
-                    <a href="pages/dashboard.php">
-                        Dashboard
-                    </a>
-
-                <?php endif; ?>
-
-                <a href="auth/logout.php">
-                    Logout
-                </a>
-
-            <?php else: ?>
-
-                <a href="auth/login.php">
-                    Login
-                </a>
-
-                <a href="auth/register.php"
-                   class="nav-button">
-                    Get Started
-                </a>
-
-            <?php endif; ?>
-
-        </div>
-
-    </nav>
+<nav class="navbar">
 
 
-    <!-- Hero Section -->
-
-    <section class="hero">
-
-        <div class="hero-content">
-
-            <p class="eyebrow">
-                EXPLORE • EXPERIENCE • REMEMBER
-            </p>
-
-            <h1>
-                Discover Your
-                <span>Next Adventure.</span>
-            </h1>
-
-            <p class="hero-description">
-                Explore breathtaking destinations,
-                exciting adventures and unforgettable
-                experiences across Sri Lanka.
-            </p>
-
-            <div class="hero-buttons">
-
-                <a href="#adventures"
-                   class="primary-button">
-                    Explore Adventures
-                </a>
-
-                <a href="#about"
-                   class="secondary-button">
-                    Learn More
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- Categories -->
-
-    <section class="categories">
-
-        <div class="section-heading">
-
-            <p class="eyebrow">
-                FIND YOUR EXPERIENCE
-            </p>
-
-            <h2>
-                Explore by Category
-            </h2>
-
-        </div>
-
-        <div class="category-grid">
-
-            <div class="glass-card">
-                <div class="category-icon">🏔️</div>
-                <h3>Hiking</h3>
-                <p>Discover beautiful mountain trails.</p>
-            </div>
-
-            <div class="glass-card">
-                <div class="category-icon">🏕️</div>
-                <h3>Camping</h3>
-                <p>Experience nature under the stars.</p>
-            </div>
-
-            <div class="glass-card">
-                <div class="category-icon">🌊</div>
-                <h3>Water Sports</h3>
-                <p>Feel the excitement of the water.</p>
-            </div>
-
-            <div class="glass-card">
-                <div class="category-icon">🧗</div>
-                <h3>Rock Climbing</h3>
-                <p>Challenge yourself with new heights.</p>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- Adventures -->
-
-   <section class="adventures" id="adventures">
-
-    <div class="section-heading">
-
-        <p class="eyebrow">
-            POPULAR DESTINATIONS
-        </p>
-
-        <h2>
-            Featured Adventures
-        </h2>
-
-    </div>
-
-    <div class="adventure-grid">
-
-        <?php if (count($adventures) > 0): ?>
-
-            <?php foreach ($adventures as $adventure): ?>
+    <!-- LOGO -->
 
     <a
-        href="pages/adventure-details.php?id=<?php
-            echo $adventure["adventure_id"];
-        ?>"
-        class="adventure-card"
+        href="index.php"
+        class="logo"
     >
 
-        <div
-            class="adventure-image"
-            style="background-image:
-                linear-gradient(
-                    to top,
-                    rgba(0, 0, 0, 0.8),
-                    transparent
-                ),
-                url('assets/images/<?php
-                    echo htmlspecialchars($adventure["image_url"]);
-                ?>');"
-        >
-
-            <span>
-                <?php
-                echo htmlspecialchars(
-                    $adventure["category_name"]
-                );
-                ?>
-            </span>
-
-        </div>
-
-
-        <div class="adventure-content">
-
-            <p class="location">
-                📍
-                <?php
-                echo htmlspecialchars(
-                    $adventure["location_name"]
-                );
-                ?>,
-                <?php
-                echo htmlspecialchars(
-                    $adventure["district"]
-                );
-                ?>
-            </p>
-
-
-            <h3>
-                <?php
-                echo htmlspecialchars(
-                    $adventure["adventure_name"]
-                );
-                ?>
-            </h3>
-
-
-            <p>
-                <?php
-                echo htmlspecialchars(
-                    $adventure["description"]
-                );
-                ?>
-            </p>
-
-
-            <div class="adventure-footer">
-
-                <span>
-                    <?php
-                    echo htmlspecialchars(
-                        $adventure["difficulty_level"]
-                    );
-                    ?>
-                </span>
-
-                <span>
-                    Rs.
-                    <?php
-                    echo number_format(
-                        $adventure["price"],
-                        2
-                    );
-                    ?>
-                </span>
-
-            </div>
-
-        </div>
+        Explore<span>X</span>
 
     </a>
 
-<?php endforeach; ?>
+
+    <div class="nav-links">
+
+
+        <!-- HOME -->
+
+        <a href="index.php">
+
+            Home
+
+        </a>
+
+
+        <!-- ADVENTURES -->
+
+        <a href="index.php#adventures">
+
+            Adventures
+
+        </a>
+
+
+        <!-- ABOUT -->
+
+        <a href="index.php#about">
+
+            About
+
+        </a>
+
+
+        <?php if (isset($_SESSION["user_id"])): ?>
+
+
+            <?php if ($_SESSION["role"] === "ADMIN"): ?>
+
+
+                <!-- =================================
+                     ADMIN ONLY
+                ================================== -->
+
+                <a href="admin/dashboard.php">
+
+                    Dashboard
+
+                </a>
+
+
+            <?php else: ?>
+
+
+                <!-- =================================
+                     NORMAL USER ONLY
+                ================================== -->
+
+                <a href="pages/my-bookings.php">
+
+                    My Booking
+
+                </a>
+
+
+            <?php endif; ?>
+
+
+            <!-- LOGOUT -->
+
+            <a href="auth/logout.php">
+
+                Logout
+
+            </a>
+
 
         <?php else: ?>
 
-            <div class="glass-card">
 
-                <h3>No adventures available</h3>
+            <!-- =================================
+                 GUEST
+            ================================== -->
 
-                <p>
-                    Adventures will appear here once
-                    they are added.
-                </p>
+            <a href="auth/login.php">
 
-            </div>
+                Login
+
+            </a>
+
+
+            <a
+                href="auth/register.php"
+                class="nav-button"
+            >
+
+                Get Started
+
+            </a>
+
 
         <?php endif; ?>
 
-    
+
+    </div>
+
+</nav>
+
+
+
+<!-- =====================================
+     HERO SECTION
+===================================== -->
+
+<section class="hero">
+
+
+    <div class="hero-content">
+
+
+        <p class="eyebrow">
+
+            EXPLORE • EXPERIENCE • REMEMBER
+
+        </p>
+
+
+        <h1>
+
+            Discover Your
+
+            <span>
+                Next Adventure.
+            </span>
+
+        </h1>
+
+
+        <p class="hero-description">
+
+            Explore breathtaking destinations,
+            exciting adventures and unforgettable
+            experiences across Sri Lanka.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+
+            <a
+                href="#adventures"
+                class="primary-button"
+            >
+
+                Explore Adventures
+
+            </a>
+
+
+            <a
+                href="#about"
+                class="secondary-button"
+            >
+
+                Learn More
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
 
 </section>
 
-    <!-- About -->
 
-    <section class="about"
-             id="about">
 
-        <div class="about-content">
+<!-- =====================================
+     CATEGORIES
+===================================== -->
 
-            <p class="eyebrow">
-                ABOUT EXPLOREX
-            </p>
+<section class="categories">
 
-            <h2>
-                Your Journey
-                Starts Here.
-            </h2>
+
+    <div class="section-heading">
+
+
+        <p class="eyebrow">
+
+            FIND YOUR EXPERIENCE
+
+        </p>
+
+
+        <h2>
+
+            Explore by Category
+
+        </h2>
+
+
+    </div>
+
+
+    <div class="category-grid">
+
+
+        <div class="glass-card">
+
+            <div class="category-icon">
+                🏔️
+            </div>
+
+            <h3>
+                Hiking
+            </h3>
 
             <p>
-                ExploreX helps adventure seekers discover
-                exciting destinations and unforgettable
-                experiences across Sri Lanka.
+                Discover beautiful mountain trails.
             </p>
 
         </div>
 
-    </section>
 
+        <div class="glass-card">
 
-    <!-- Footer -->
+            <div class="category-icon">
+                🏕️
+            </div>
 
-    <footer>
+            <h3>
+                Camping
+            </h3>
 
-        <div class="logo">
-            Explore<span>X</span>
+            <p>
+                Experience nature under the stars.
+            </p>
+
         </div>
 
-        <p>
-            Explore • Experience • Remember
+
+        <div class="glass-card">
+
+            <div class="category-icon">
+                🌊
+            </div>
+
+            <h3>
+                Water Sports
+            </h3>
+
+            <p>
+                Feel the excitement of the water.
+            </p>
+
+        </div>
+
+
+        <div class="glass-card">
+
+            <div class="category-icon">
+                🧗
+            </div>
+
+            <h3>
+                Rock Climbing
+            </h3>
+
+            <p>
+                Challenge yourself with new heights.
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================
+     ADVENTURES
+===================================== -->
+
+<section
+    class="adventures"
+    id="adventures"
+>
+
+
+    <div class="section-heading">
+
+
+        <p class="eyebrow">
+
+            POPULAR DESTINATIONS
+
         </p>
 
-        <p>
-            © 2026 ExploreX. All rights reserved.
+
+        <h2>
+
+            Featured Adventures
+
+        </h2>
+
+
+    </div>
+
+
+    <div class="adventure-grid">
+
+
+        <?php if (count($adventures) > 0): ?>
+
+
+            <?php foreach ($adventures as $adventure): ?>
+
+
+                <a
+                    href="pages/adventure-details.php?id=<?php
+                        echo $adventure["adventure_id"];
+                    ?>"
+                    class="adventure-card"
+                >
+
+
+                    <div
+                        class="adventure-image"
+                        style="
+                            background-image:
+                            linear-gradient(
+                                to top,
+                                rgba(0, 0, 0, 0.8),
+                                transparent
+                            ),
+                            url('assets/images/<?php
+                                echo htmlspecialchars(
+                                    $adventure["image_url"]
+                                );
+                            ?>');
+                        "
+                    >
+
+
+                        <span>
+
+                            <?php
+
+                            echo htmlspecialchars(
+                                $adventure["category_name"]
+                            );
+
+                            ?>
+
+                        </span>
+
+
+                    </div>
+
+
+                    <div class="adventure-content">
+
+
+                        <p class="location">
+
+                            📍
+
+                            <?php
+
+                            echo htmlspecialchars(
+                                $adventure["location_name"]
+                            );
+
+                            ?>,
+
+                            <?php
+
+                            echo htmlspecialchars(
+                                $adventure["district"]
+                            );
+
+                            ?>
+
+                        </p>
+
+
+                        <h3>
+
+                            <?php
+
+                            echo htmlspecialchars(
+                                $adventure["adventure_name"]
+                            );
+
+                            ?>
+
+                        </h3>
+
+
+                        <p>
+
+                            <?php
+
+                            echo htmlspecialchars(
+                                $adventure["description"]
+                            );
+
+                            ?>
+
+                        </p>
+
+
+                        <div class="adventure-footer">
+
+
+                            <span>
+
+                                <?php
+
+                                echo htmlspecialchars(
+                                    $adventure[
+                                        "difficulty_level"
+                                    ]
+                                );
+
+                                ?>
+
+                            </span>
+
+
+                            <span>
+
+                                Rs.
+
+                                <?php
+
+                                echo number_format(
+                                    $adventure["price"],
+                                    2
+                                );
+
+                                ?>
+
+                            </span>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </a>
+
+
+            <?php endforeach; ?>
+
+
+        <?php else: ?>
+
+
+            <div class="glass-card">
+
+
+                <h3>
+
+                    No adventures available
+
+                </h3>
+
+
+                <p>
+
+                    Adventures will appear here once
+                    they are added.
+
+                </p>
+
+
+            </div>
+
+
+        <?php endif; ?>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================
+     ABOUT
+===================================== -->
+
+<section
+    class="about"
+    id="about"
+>
+
+
+    <div class="about-content">
+
+
+        <p class="eyebrow">
+
+            ABOUT EXPLOREX
+
         </p>
 
-    </footer>
+
+        <h2>
+
+            Your Journey
+            Starts Here.
+
+        </h2>
 
 
-    <script src="assets/js/script.js"></script>
+        <p>
+
+            ExploreX helps adventure seekers discover
+            exciting destinations and unforgettable
+            experiences across Sri Lanka.
+
+        </p>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================
+     FOOTER
+===================================== -->
+
+<footer>
+
+
+    <div class="logo">
+
+        Explore<span>X</span>
+
+    </div>
+
+
+    <p>
+
+        Explore • Experience • Remember
+
+    </p>
+
+
+    <p>
+
+        © 2026 ExploreX. All rights reserved.
+
+    </p>
+
+
+</footer>
+
+
+
+<script src="assets/js/script.js"></script>
+
 
 </body>
 

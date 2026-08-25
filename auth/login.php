@@ -28,6 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         );
 
         $stmt->bind_param("s", $email);
+
         $stmt->execute();
 
         $result = $stmt->get_result();
@@ -45,25 +46,46 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $_SESSION["email"] = $user["email"];
                 $_SESSION["role"] = $user["role"];
 
+
+                // =================================
+                // ADMIN LOGIN
+                // =================================
+
                 if ($user["role"] === "ADMIN") {
 
-                    header("Location: ../admin/dashboard.php");
+                    header(
+                        "Location: ../admin/dashboard.php"
+                    );
+
                     exit();
 
-                } else {
+                }
 
-                    header("Location: ../pages/dashboard.php");
+
+                // =================================
+                // NORMAL USER LOGIN
+                // =================================
+
+                else {
+
+                    header(
+                        "Location: ../index.php"
+                    );
+
                     exit();
+
                 }
 
             } else {
 
                 $message = "Invalid email or password.";
+
             }
 
         } else {
 
             $message = "Invalid email or password.";
+
         }
 
         $stmt->close();
@@ -72,37 +94,64 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 ?>
 
+
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-    <title>ExploreX - Login</title>
+    <title>
+        ExploreX - Login
+    </title>
 
 </head>
 
+
 <body>
 
-    <h1>ExploreX</h1>
 
-    <h2>Login</h2>
+    <h1>
+        ExploreX
+    </h1>
+
+
+    <h2>
+        Login
+    </h2>
+
 
     <?php if (!empty($message)): ?>
 
         <p>
-            <?php echo htmlspecialchars($message); ?>
+
+            <?php
+
+            echo htmlspecialchars($message);
+
+            ?>
+
         </p>
 
     <?php endif; ?>
 
+
     <form method="POST">
 
-        <label>Email</label><br>
+
+        <label>
+            Email
+        </label>
+
+        <br>
+
 
         <input
             type="email"
@@ -110,9 +159,17 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             required
         >
 
-        <br><br>
 
-        <label>Password</label><br>
+        <br>
+        <br>
+
+
+        <label>
+            Password
+        </label>
+
+        <br>
+
 
         <input
             type="password"
@@ -120,19 +177,31 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             required
         >
 
-        <br><br>
+
+        <br>
+        <br>
+
 
         <button type="submit">
+
             Login
+
         </button>
+
 
     </form>
 
+
     <br>
 
+
     <a href="register.php">
-        Don't have an account? Register
+
+        Don't have an account?
+        Register
+
     </a>
+
 
 </body>
 

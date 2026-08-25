@@ -4,61 +4,29 @@ session_start();
 
 require_once "../config/db.php";
 
+
+// =====================================
+// LOGIN CHECK
+// =====================================
+
 if (!isset($_SESSION["user_id"])) {
+
     header("Location: ../auth/login.php");
     exit();
+
 }
+
+
+// =====================================
+// USER ONLY
+// =====================================
 
 if ($_SESSION["role"] !== "USER") {
+
     header("Location: ../admin/dashboard.php");
     exit();
+
 }
-
-$user_id = $_SESSION["user_id"];
-
-
-// Get user's bookings
-
-$stmt = $conn->prepare("
-    SELECT
-        b.booking_id,
-        b.booking_date,
-        b.participants,
-        b.total_amount,
-        b.status,
-
-        a.adventure_id,
-        a.adventure_name,
-
-        l.location_name,
-        l.district,
-
-        ai.image_url
-
-    FROM bookings b
-
-    INNER JOIN adventures a
-        ON b.adventure_id = a.adventure_id
-
-    INNER JOIN locations l
-        ON a.location_id = l.location_id
-
-    LEFT JOIN adventure_images ai
-        ON a.adventure_id = ai.adventure_id
-        AND ai.is_main = TRUE
-
-    WHERE b.user_id = ?
-
-    ORDER BY b.booking_date DESC
-");
-
-$stmt->bind_param("i", $user_id);
-
-$stmt->execute();
-
-$bookings = $stmt->get_result();
-
-$stmt->close();
 
 ?>
 
@@ -69,208 +37,282 @@ $stmt->close();
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
-        My Dashboard | ExploreX
+        ExploreX | Dashboard
     </title>
 
-    <link rel="stylesheet"
-          href="../assets/css/style.css">
+
+    <link
+        rel="stylesheet"
+        href="../assets/css/style.css"
+    >
+
 
     <style>
 
+        /* =====================================
+           DASHBOARD PAGE
+        ===================================== */
+
         .dashboard-page {
+
+            min-height: 100vh;
+
             padding: 130px 7% 80px;
+
         }
+
+
+        .dashboard-container {
+
+            max-width: 1100px;
+
+            margin: 0 auto;
+
+        }
+
+
+        /* =====================================
+           WELCOME SECTION
+        ===================================== */
 
         .dashboard-header {
+
             margin-bottom: 45px;
+
         }
+
 
         .dashboard-header h1 {
-            font-size: clamp(40px, 5vw, 65px);
-            line-height: 1;
-            margin-bottom: 12px;
+
+            font-size: clamp(42px, 6vw, 70px);
+
+            line-height: 0.95;
+
+            margin: 10px 0 18px;
+
         }
+
 
         .dashboard-header p {
+
             color: #9da49a;
+
+            font-size: 15px;
+
         }
+
 
         .welcome-name {
+
             color: #b5c889;
+
         }
 
-        .booking-grid {
+
+        /* =====================================
+           ACTION CARDS
+        ===================================== */
+
+        .dashboard-actions {
+
             display: grid;
-            grid-template-columns:
-                repeat(3, 1fr);
+
+            grid-template-columns: repeat(2, 1fr);
+
             gap: 22px;
+
         }
 
-        .booking-card {
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 25px;
-            background: rgba(255,255,255,.05);
-            backdrop-filter: blur(20px);
-        }
 
-        .booking-image {
-            height: 220px;
+        .dashboard-action {
 
-            background-position: center;
-            background-size: cover;
-            background-repeat: no-repeat;
-
-            position: relative;
-        }
-
-        .status {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-
-            padding: 7px 13px;
-
-            border-radius: 20px;
-
-            font-size: 11px;
-            font-weight: bold;
-
-            background: rgba(0,0,0,.55);
-
-            backdrop-filter: blur(10px);
-        }
-
-        .status-PENDING {
-            color: #e6cf86;
-        }
-
-        .status-CONFIRMED {
-            color: #a9d58f;
-        }
-
-        .status-CANCELLED {
-            color: #e99b9b;
-        }
-
-        .booking-content {
-            padding: 22px;
-        }
-
-        .booking-content h3 {
-            font-size: 22px;
-            margin-bottom: 8px;
-        }
-
-        .booking-location {
-            color: #9da49a;
-            font-size: 13px;
-            margin-bottom: 18px;
-        }
-
-        .booking-info {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .booking-info div {
-            padding: 12px;
-            border-radius: 12px;
-            background: rgba(255,255,255,.04);
-        }
-
-        .booking-info small {
             display: block;
-            color: #777;
-            font-size: 11px;
-            margin-bottom: 3px;
+
+            padding: 32px;
+
+            border-radius: 25px;
+
+            background: rgba(255,255,255,.05);
+
+            border: 1px solid rgba(255,255,255,.10);
+
+            transition: .25s;
+
         }
 
-        .booking-info strong {
-            font-size: 13px;
+
+        .dashboard-action:hover {
+
+            transform: translateY(-4px);
+
+            background: rgba(255,255,255,.07);
+
+            border-color:
+                rgba(181,200,137,.30);
+
         }
 
-        .booking-footer {
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,.08);
+
+        .action-icon {
+
+            width: 55px;
+
+            height: 55px;
 
             display: flex;
-            justify-content: space-between;
+
             align-items: center;
+
+            justify-content: center;
+
+            border-radius: 17px;
+
+            background: rgba(181,200,137,.10);
+
+            font-size: 25px;
+
+            margin-bottom: 20px;
+
         }
 
-        .booking-price {
+
+        .dashboard-action h2 {
+
+            font-size: 23px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .dashboard-action p {
+
+            color: #858b83;
+
+            font-size: 13px;
+
+            line-height: 1.7;
+
+        }
+
+
+        .action-link {
+
+            display: block;
+
+            margin-top: 20px;
+
             color: #b5c889;
+
+            font-size: 13px;
+
             font-weight: bold;
+
         }
 
-        .view-button {
-            padding: 9px 15px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,.1);
-            font-size: 12px;
-        }
 
-        .view-button:hover {
-            background: rgba(255,255,255,.08);
-        }
+        /* =====================================
+           BOTTOM SECTION
+        ===================================== */
 
-        .empty-state {
-            padding: 60px 30px;
-            text-align: center;
+        .dashboard-bottom {
 
-            border: 1px solid rgba(255,255,255,.1);
+            margin-top: 22px;
+
+            padding: 32px;
+
             border-radius: 25px;
 
-            background: rgba(255,255,255,.04);
+            background: rgba(255,255,255,.035);
+
+            border: 1px solid rgba(255,255,255,.08);
+
         }
 
-        .empty-state-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
 
-        .empty-state h2 {
+        .dashboard-bottom h2 {
+
+            font-size: 24px;
+
             margin-bottom: 10px;
+
         }
 
-        .empty-state p {
-            color: #9da49a;
-            margin-bottom: 25px;
+
+        .dashboard-bottom p {
+
+            color: #858b83;
+
+            font-size: 13px;
+
+            margin-bottom: 22px;
+
         }
+
 
         .explore-button {
+
             display: inline-block;
 
-            padding: 13px 23px;
+            padding: 13px 24px;
 
-            border-radius: 25px;
+            border-radius: 30px;
 
             background: #8b9b62;
+
             color: #10120d;
 
+            font-size: 13px;
+
             font-weight: bold;
+
         }
 
-        @media (max-width: 1000px) {
 
-            .booking-grid {
-                grid-template-columns:
-                    repeat(2, 1fr);
+        .explore-button:hover {
+
+            background: #b5c889;
+
+        }
+
+
+        /* =====================================
+           MOBILE
+        ===================================== */
+
+        @media (max-width: 700px) {
+
+            .dashboard-page {
+
+                padding: 110px 5% 60px;
+
             }
 
-        }
 
-        @media (max-width: 650px) {
+            .dashboard-actions {
 
-            .booking-grid {
                 grid-template-columns: 1fr;
+
+            }
+
+
+            .dashboard-action {
+
+                padding: 25px;
+
+            }
+
+
+            .dashboard-bottom {
+
+                padding: 25px;
+
             }
 
         }
@@ -279,15 +321,21 @@ $stmt->close();
 
 </head>
 
+
 <body>
 
 
-<!-- Navigation -->
+<!-- =====================================
+     USER NAVIGATION
+===================================== -->
 
 <nav class="navbar">
 
-    <a href="../index.php"
-       class="logo">
+
+    <a
+        href="../index.php"
+        class="logo"
+    >
 
         Explore<span>X</span>
 
@@ -296,309 +344,238 @@ $stmt->close();
 
     <div class="nav-links">
 
+
+        <!-- HOME -->
+
         <a href="../index.php">
+
             Home
+
         </a>
+
+
+        <!-- ADVENTURES -->
 
         <a href="../index.php#adventures">
+
             Adventures
+
         </a>
 
-        <a href="../auth/logout.php">
-            Logout
+
+        <!-- MY BOOKINGS -->
+
+        <a href="my-bookings.php">
+
+            My Bookings
+
         </a>
+
+
+        <!-- LOGOUT -->
+
+        <a href="../auth/logout.php">
+
+            Logout
+
+        </a>
+
 
     </div>
 
 </nav>
 
 
-<!-- Dashboard -->
+
+<!-- =====================================
+     DASHBOARD CONTENT
+===================================== -->
 
 <main class="dashboard-page">
 
 
-    <div class="dashboard-header">
+    <div class="dashboard-container">
 
-        <p class="eyebrow">
-            MY EXPLOREX
-        </p>
 
-        <h1>
+        <!-- =================================
+             WELCOME
+        ================================== -->
 
-            Welcome,
-            <span class="welcome-name">
+        <div class="dashboard-header">
 
-                <?php
-                echo htmlspecialchars(
-                    $_SESSION["name"]
-                );
-                ?>
 
-            </span>
+            <p class="eyebrow">
 
-        </h1>
+                MY EXPLOREX
 
-        <p>
-            Manage your adventures and bookings
-            from one place.
-        </p>
+            </p>
 
-    </div>
 
+            <h1>
 
-    <div class="section-heading">
+                Welcome,
 
-        <p class="eyebrow">
-            YOUR JOURNEY
-        </p>
+                <span class="welcome-name">
 
-        <h2>
-            My Bookings
-        </h2>
+                    <?php
 
-    </div>
+                    echo htmlspecialchars(
+                        $_SESSION["name"]
+                    );
 
+                    ?>
 
-    <?php if ($bookings->num_rows > 0): ?>
+                </span>
 
+            </h1>
 
-        <div class="booking-grid">
 
+            <p>
 
-            <?php while ($booking = $bookings->fetch_assoc()): ?>
+                Discover new adventures and
+                manage your ExploreX journey.
 
-
-                <div class="booking-card">
-
-
-                    <div
-                        class="booking-image"
-                        style="background-image:
-                            linear-gradient(
-                                to top,
-                                rgba(0,0,0,.75),
-                                transparent
-                            ),
-                            url('../assets/images/<?php
-                                echo htmlspecialchars(
-                                    $booking["image_url"]
-                                );
-                            ?>');"
-                    >
-
-                        <span
-                            class="status status-<?php
-                                echo htmlspecialchars(
-                                    $booking["status"]
-                                );
-                            ?>"
-                        >
-
-                            <?php
-                            echo htmlspecialchars(
-                                $booking["status"]
-                            );
-                            ?>
-
-                        </span>
-
-                    </div>
-
-
-                    <div class="booking-content">
-
-
-                        <h3>
-
-                            <?php
-                            echo htmlspecialchars(
-                                $booking["adventure_name"]
-                            );
-                            ?>
-
-                        </h3>
-
-
-                        <p class="booking-location">
-
-                            📍
-
-                            <?php
-                            echo htmlspecialchars(
-                                $booking["location_name"]
-                            );
-                            ?>,
-
-                            <?php
-                            echo htmlspecialchars(
-                                $booking["district"]
-                            );
-                            ?>
-
-                        </p>
-
-
-                        <div class="booking-info">
-
-
-                            <div>
-
-                                <small>
-                                    Booking ID
-                                </small>
-
-                                <strong>
-
-                                    #
-
-                                    <?php
-                                    echo $booking["booking_id"];
-                                    ?>
-
-                                </strong>
-
-                            </div>
-
-
-                            <div>
-
-                                <small>
-                                    Participants
-                                </small>
-
-                                <strong>
-
-                                    <?php
-                                    echo $booking["participants"];
-                                    ?>
-
-                                    People
-
-                                </strong>
-
-                            </div>
-
-
-                            <div>
-
-                                <small>
-                                    Booking Date
-                                </small>
-
-                                <strong>
-
-                                    <?php
-                                    echo date(
-                                        "d M Y",
-                                        strtotime(
-                                            $booking["booking_date"]
-                                        )
-                                    );
-                                    ?>
-
-                                </strong>
-
-                            </div>
-
-
-                            <div>
-
-                                <small>
-                                    Status
-                                </small>
-
-                                <strong>
-
-                                    <?php
-                                    echo htmlspecialchars(
-                                        $booking["status"]
-                                    );
-                                    ?>
-
-                                </strong>
-
-                            </div>
-
-
-                        </div>
-
-
-                        <div class="booking-footer">
-
-
-                            <span class="booking-price">
-
-                                Rs.
-
-                                <?php
-                                echo number_format(
-                                    $booking["total_amount"],
-                                    2
-                                );
-                                ?>
-
-                            </span>
-
-
-                            <a
-                                href="adventure-details.php?id=<?php
-                                    echo $booking[
-                                        "adventure_id"
-                                    ];
-                                ?>"
-                                class="view-button"
-                            >
-                                View Adventure
-                            </a>
-
-
-                        </div>
-
-
-                    </div>
-
-
-                </div>
-
-
-            <?php endwhile; ?>
+            </p>
 
 
         </div>
 
 
-    <?php else: ?>
+
+        <!-- =================================
+             ACTIONS
+        ================================== -->
+
+        <div class="dashboard-actions">
 
 
-        <div class="empty-state">
+            <!-- MY BOOKINGS -->
 
-            <div class="empty-state-icon">
-                🏕️
-            </div>
+            <a
+                href="my-bookings.php"
+                class="dashboard-action"
+            >
+
+
+                <div class="action-icon">
+
+                    📋
+
+                </div>
+
+
+                <h2>
+
+                    My Bookings
+
+                </h2>
+
+
+                <p>
+
+                    View and manage all your
+                    adventure bookings, participants,
+                    booking dates and status.
+
+                </p>
+
+
+                <span class="action-link">
+
+                    View My Bookings →
+
+                </span>
+
+
+            </a>
+
+
+
+            <!-- ADVENTURES -->
+
+            <a
+                href="../index.php#adventures"
+                class="dashboard-action"
+            >
+
+
+                <div class="action-icon">
+
+                    🏔️
+
+                </div>
+
+
+                <h2>
+
+                    Explore Adventures
+
+                </h2>
+
+
+                <p>
+
+                    Discover exciting adventures,
+                    beautiful destinations and
+                    unforgettable experiences.
+
+                </p>
+
+
+                <span class="action-link">
+
+                    Explore Adventures →
+
+                </span>
+
+
+            </a>
+
+
+        </div>
+
+
+
+        <!-- =================================
+             BOTTOM
+        ================================== -->
+
+        <div class="dashboard-bottom">
+
 
             <h2>
-                No Adventures Booked Yet
+
+                Ready for your next adventure?
+
             </h2>
 
+
             <p>
-                Your next adventure is waiting for you.
+
+                Explore Sri Lanka's exciting
+                adventure experiences with ExploreX.
+
             </p>
+
 
             <a
                 href="../index.php#adventures"
                 class="explore-button"
             >
+
                 Explore Adventures →
+
             </a>
+
 
         </div>
 
 
-    <?php endif; ?>
+    </div>
 
 
 </main>
+
 
 </body>
 
