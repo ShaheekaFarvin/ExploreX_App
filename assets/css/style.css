@@ -243,7 +243,13 @@ a {
     background: var(--glass);
     backdrop-filter: blur(20px);
 }
-
+.adventure-image {
+    height: 300px;
+    position: relative;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
 .adventure-image {
     height: 300px;
     position: relative;
