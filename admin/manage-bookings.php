@@ -72,9 +72,42 @@ if (
 
 
 // Get bookings
+$filter_status = isset($_GET["status"]) ? strtoupper(trim($_GET["status"])) : "";
+$allowed_filters = ["PENDING", "CONFIRMED", "CANCELLED"];
 
-$stmt = $conn->prepare("
-    SELECT
+if (in_array($filter_status, $allowed_filters, true)) {
+    $stmt = $conn->prepare("
+        SELECT
+
+            b.booking_id,
+            b.booking_date,
+            b.participants,
+            b.total_amount,
+            b.status,
+
+            u.user_id,
+            u.name AS user_name,
+            u.email AS user_email,
+
+            a.adventure_id,
+            a.adventure_name,
+
+            l.location_name,
+            l.district
+
+        FROM bookings b
+
+        INNER JOIN users u ON b.user_id = u.user_id
+        INNER JOIN adventures a ON b.adventure_id = a.adventure_id
+        INNER JOIN locations l ON a.location_id = l.location_id
+
+        WHERE b.status = ?
+        ORDER BY b.booking_date DESC
+    ");
+    $stmt->bind_param("s", $filter_status);
+} else {
+    $stmt = $conn->prepare("
+        SELECT
 
         b.booking_id,
         b.booking_date,
@@ -105,7 +138,8 @@ $stmt = $conn->prepare("
 
     ORDER BY
         b.booking_date DESC
-");
+    ");
+}
 
 $stmt->execute();
 
@@ -467,6 +501,8 @@ $base_path = "../";
 ?>
 <?php require __DIR__ . "/../includes/navbar.php"; ?>
 
+<div class="admin-back-wrap"><a class="admin-back-link" href="dashboard.php">← BACK TO DASHBOARD</a></div>
+
 
 <main class="manage-page">
 
@@ -478,7 +514,7 @@ $base_path = "../";
     </p>
 
     <h1>
-        Bookings
+        <?php echo $filter_status ? htmlspecialchars($filter_status) . " BOOKINGS" : "BOOKINGS"; ?>
     </h1>
 
     <p>

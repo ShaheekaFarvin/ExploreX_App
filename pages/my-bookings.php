@@ -641,6 +641,8 @@ $stmt->close();
 
         }
 
+    .profile-link{display:inline-block;margin-top:14px;padding:9px 15px;border:1px solid rgba(255,255,255,.12);border-radius:20px;color:#dfe4da;text-decoration:none;font-size:11px;transition:.25s}.profile-link:hover{background:rgba(181,200,137,.08);border-color:rgba(181,200,137,.3)}
+
     </style>
 
 </head>
@@ -690,6 +692,8 @@ $base_path = "../";
             Keep track of all your ExploreX adventures.
 
         </p>
+
+        <a href="profile.php" class="profile-link">MY PROFILE →</a>
 
 
     </div>

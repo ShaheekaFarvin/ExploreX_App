@@ -11,6 +11,12 @@ $base_path = $base_path ?? '';
         Explore<span>X</span>
     </a>
 
+    <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+
     <div class="nav-links">
 
         <a href="<?php echo $base_path; ?>index.php">
@@ -60,3 +66,27 @@ $base_path = $base_path ?? '';
     </div>
 
 </nav>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const navbar = document.querySelector(".navbar");
+    if (!navbar) return;
+    const toggle = navbar.querySelector(".menu-toggle");
+    const links = navbar.querySelector(".nav-links");
+    if (!toggle || !links) return;
+
+    toggle.addEventListener("click", function () {
+        const open = navbar.classList.toggle("menu-open");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        toggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
+    });
+
+    links.querySelectorAll("a").forEach(function (link) {
+        link.addEventListener("click", function () {
+            navbar.classList.remove("menu-open");
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.setAttribute("aria-label", "Open navigation");
+        });
+    });
+});
+</script>

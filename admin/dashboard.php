@@ -110,7 +110,7 @@ $recent_stmt = $conn->query("
         }
 
         .admin-header h1 {
-            font-size: clamp(40px, 5vw, 65px);
+            font-size: clamp(34px, 4vw, 52px);
             line-height: 1;
             margin-bottom: 12px;
         }
@@ -128,38 +128,81 @@ $recent_stmt = $conn->query("
 
         .stats-grid {
             display: grid;
-            grid-template-columns:
-                repeat(4, 1fr);
-
-            gap: 18px;
-
-            margin-bottom: 55px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 48px;
         }
 
         .stat-card {
-            padding: 25px;
+            position: relative;
+            min-height: 142px;
+            padding: 20px 16px;
+            border-radius: 18px;
+            overflow: hidden;
+            text-decoration: none;
+            text-align: center;
+            background-size: cover;
+            background-position: center;
+            border: 1px solid rgba(255,255,255,.12);
+            box-shadow: 0 12px 30px rgba(0,0,0,.18);
+            backdrop-filter: blur(12px);
+            transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+        }
 
-            border-radius: 22px;
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(181,200,137,.45);
+            box-shadow: 0 18px 38px rgba(0,0,0,.28);
+        }
 
-            background:
-                rgba(255,255,255,.05);
+        .stat-users {
+            background-image: url('https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=700&q=80');
+        }
 
-            border:
-                1px solid
-                rgba(255,255,255,.1);
+        .stat-adventures {
+            background-image: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=700&q=80');
+        }
 
-            backdrop-filter: blur(20px);
+        .stat-bookings {
+            background-image: url('https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=700&q=80');
+        }
+
+        .stat-pending {
+            background-image: url('https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=700&q=80');
+        }
+
+        .stat-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(8,12,9,.78), rgba(24,30,20,.55));
+        }
+
+        .stat-content {
+            position: relative;
+            z-index: 1;
         }
 
         .stat-card p {
-            color: #9da49a;
-            font-size: 13px;
-            margin-bottom: 10px;
+            margin: 0 0 7px;
+            color: #eef2e8;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.1px;
         }
 
         .stat-card h2 {
-            font-size: 38px;
-            color: #b5c889;
+            margin: 0;
+            color: #d6e3ad;
+            font-size: 34px;
+            line-height: 1;
+            font-weight: 800;
+        }
+
+        .stat-card span {
+            display: block;
+            margin-top: 10px;
+            color: rgba(255,255,255,.72);
+            font-size: 10px;
         }
 
 
@@ -374,62 +417,45 @@ $base_path = "../";
     </div>
 
 
-    <!-- STATISTICS -->
+    <!-- PLATFORM STATISTICS -->
 
     <div class="stats-grid">
 
+        <a href="manage-users.php" class="stat-card stat-users">
+            <div class="stat-overlay"></div>
+            <div class="stat-content">
+                <p>TOTAL USERS</p>
+                <h2><?php echo (int)$total_users; ?></h2>
+                <span>View users →</span>
+            </div>
+        </a>
 
-        <div class="stat-card">
+        <a href="manage-adventures.php" class="stat-card stat-adventures">
+            <div class="stat-overlay"></div>
+            <div class="stat-content">
+                <p>ADVENTURES</p>
+                <h2><?php echo (int)$total_adventures; ?></h2>
+                <span>Manage adventures →</span>
+            </div>
+        </a>
 
-            <p>
-                TOTAL USERS
-            </p>
+        <a href="manage-bookings.php" class="stat-card stat-bookings">
+            <div class="stat-overlay"></div>
+            <div class="stat-content">
+                <p>TOTAL BOOKINGS</p>
+                <h2><?php echo (int)$total_bookings; ?></h2>
+                <span>View bookings →</span>
+            </div>
+        </a>
 
-            <h2>
-                <?php echo $total_users; ?>
-            </h2>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <p>
-                ADVENTURES
-            </p>
-
-            <h2>
-                <?php echo $total_adventures; ?>
-            </h2>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <p>
-                TOTAL BOOKINGS
-            </p>
-
-            <h2>
-                <?php echo $total_bookings; ?>
-            </h2>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <p>
-                PENDING BOOKINGS
-            </p>
-
-            <h2>
-                <?php echo $pending_bookings; ?>
-            </h2>
-
-        </div>
-
+        <a href="manage-bookings.php?status=PENDING" class="stat-card stat-pending">
+            <div class="stat-overlay"></div>
+            <div class="stat-content">
+                <p>PENDING BOOKINGS</p>
+                <h2><?php echo (int)$pending_bookings; ?></h2>
+                <span>Review pending →</span>
+            </div>
+        </a>
 
     </div>
 
@@ -449,71 +475,31 @@ $base_path = "../";
     </div>
 
 
-    <div class="actions-grid">
+    <div class="actions-grid admin-visual-actions">
 
-
-        <a
-            href="add-adventure.php"
-            class="action-card"
-        >
-
-            <div class="action-icon">
-                ➕
+        <a href="add-adventure.php" class="action-card action-adventure-add">
+            <div class="action-icon">＋</div>
+            <div class="action-copy">
+                <h3>ADD ADVENTURE</h3>
+                <p>Create a new destination.</p>
             </div>
-
-            <h3>
-                Add Adventure
-            </h3>
-
-            <p>
-                Create a new adventure
-                destination.
-            </p>
-
         </a>
 
-
-        <a
-            href="manage-adventures.php"
-            class="action-card"
-        >
-
-            <div class="action-icon">
-                🏕️
+        <a href="manage-adventures.php" class="action-card action-adventure-manage">
+            <div class="action-icon">✦</div>
+            <div class="action-copy">
+                <h3>MANAGE ADVENTURES</h3>
+                <p>Edit and organise experiences.</p>
             </div>
-
-            <h3>
-                Manage Adventures
-            </h3>
-
-            <p>
-                Edit or delete existing
-                adventures.
-            </p>
-
         </a>
 
-
-        <a
-            href="manage-bookings.php"
-            class="action-card"
-        >
-
-            <div class="action-icon">
-                📋
+        <a href="manage-bookings.php" class="action-card action-booking-manage">
+            <div class="action-icon">⌁</div>
+            <div class="action-copy">
+                <h3>MANAGE BOOKINGS</h3>
+                <p>Review and update reservations.</p>
             </div>
-
-            <h3>
-                Manage Bookings
-            </h3>
-
-            <p>
-                View and manage user
-                bookings.
-            </p>
-
         </a>
-
 
     </div>
 

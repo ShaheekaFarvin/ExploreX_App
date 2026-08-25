@@ -431,6 +431,8 @@ $base_path = "../";
 ?>
 <?php require __DIR__ . "/../includes/navbar.php"; ?>
 
+<div class="admin-back-wrap"><a class="admin-back-link" href="dashboard.php">← BACK TO DASHBOARD</a></div>
+
 
 <main class="add-page">
 
