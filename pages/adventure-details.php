@@ -4,6 +4,9 @@ session_start();
 
 require_once "../config/db.php";
 
+
+// Check adventure ID
+
 if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
     header("Location: ../index.php");
     exit();
@@ -11,7 +14,10 @@ if (!isset($_GET["id"]) || !is_numeric($_GET["id"])) {
 
 $adventure_id = (int) $_GET["id"];
 
-$sql = "
+
+// Get adventure details
+
+$stmt = $conn->prepare("
     SELECT
         a.adventure_id,
         a.adventure_name,
@@ -20,10 +26,14 @@ $sql = "
         a.difficulty_level,
         a.duration,
         a.capacity,
+
         c.category_name,
+
         l.location_name,
         l.district,
+
         ai.image_url
+
     FROM adventures a
 
     INNER JOIN categories c
@@ -37,262 +47,473 @@ $sql = "
         AND ai.is_main = TRUE
 
     WHERE a.adventure_id = ?
-";
+");
 
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $adventure_id);
+$stmt->bind_param(
+    "i",
+    $adventure_id
+);
+
 $stmt->execute();
 
 $result = $stmt->get_result();
 
+
+// Adventure not found
+
 if ($result->num_rows !== 1) {
+
+    $stmt->close();
+
     header("Location: ../index.php");
+
     exit();
 }
+
 
 $adventure = $result->fetch_assoc();
 
 $stmt->close();
 
-
-// Get reviews
-
-$review_sql = "
-    SELECT
-        r.rating,
-        r.comment,
-        r.review_date,
-        u.name
-    FROM reviews r
-    INNER JOIN users u
-        ON r.user_id = u.user_id
-    WHERE r.adventure_id = ?
-    ORDER BY r.review_date DESC
-";
-
-$review_stmt = $conn->prepare($review_sql);
-$review_stmt->bind_param("i", $adventure_id);
-$review_stmt->execute();
-
-$reviews = $review_stmt->get_result();
-
-
-// Calculate average rating
-
-$rating_sql = "
-    SELECT
-        AVG(rating) AS average_rating,
-        COUNT(*) AS total_reviews
-    FROM reviews
-    WHERE adventure_id = ?
-";
-
-$rating_stmt = $conn->prepare($rating_sql);
-$rating_stmt->bind_param("i", $adventure_id);
-$rating_stmt->execute();
-
-$rating_result = $rating_stmt->get_result();
-$rating_data = $rating_result->fetch_assoc();
-
-$average_rating = $rating_data["average_rating"]
-    ? number_format($rating_data["average_rating"], 1)
-    : "0.0";
-
-$total_reviews = $rating_data["total_reviews"];
-
 ?>
 
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>
-        <?php echo htmlspecialchars($adventure["adventure_name"]); ?>
-        | ExploreX
-    </title>
+<title>
 
-    <link rel="stylesheet"
-          href="../assets/css/style.css">
+<?php
+echo htmlspecialchars(
+    $adventure["adventure_name"]
+);
+?>
 
-    <style>
+| ExploreX
 
-        .details-page {
-            padding: 130px 7% 80px;
-        }
+</title>
 
-        .back-link {
-            display: inline-block;
-            margin-bottom: 30px;
-            color: #b5c889;
-        }
 
-        .details-container {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 40px;
-            align-items: start;
-        }
+<link rel="stylesheet"
+      href="../assets/css/style.css">
 
-        .details-image {
-            min-height: 550px;
-            border-radius: 30px;
-            background:
-                linear-gradient(
-                    to top,
-                    rgba(0,0,0,.8),
-                    transparent 55%
-                ),
-                url("../assets/images/<?php
-                    echo htmlspecialchars(
-                        $adventure["image_url"]
-                    );
-                ?>") center/cover no-repeat;
-            border: 1px solid rgba(255,255,255,.1);
-        }
 
-        .details-content {
-            padding: 20px 0;
-        }
+<style>
 
-        .details-category {
-            color: #b5c889;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 12px;
-            font-weight: bold;
-        }
+.details-page {
 
-        .details-content h1 {
-            font-size: clamp(40px, 5vw, 70px);
-            line-height: 1;
-            margin: 15px 0 25px;
-        }
+    padding:
+        120px
+        7%
+        80px;
 
-        .details-location {
-            color: #9da49a;
-            margin-bottom: 25px;
-        }
+}
 
-        .details-description {
-            color: #9da49a;
-            font-size: 16px;
-            margin-bottom: 30px;
-        }
 
-        .details-info {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 30px;
-        }
+/* BACK */
 
-        .info-box {
-            padding: 20px;
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 18px;
-        }
+.back-link {
 
-        .info-box small {
-            display: block;
-            color: #9da49a;
-            margin-bottom: 5px;
-        }
+    display:
+        inline-block;
 
-        .info-box strong {
-            color: #f1f3eb;
-        }
+    margin-bottom:
+        30px;
 
-        .price {
-            font-size: 28px;
-            color: #b5c889;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+    color:
+        #b5c889;
 
-        .book-button {
-            display: block;
-            text-align: center;
-            padding: 16px;
-            border-radius: 30px;
-            background: #8b9b62;
-            color: #10120d;
-            font-weight: bold;
-        }
+}
 
-        .reviews-section {
-            margin-top: 80px;
-        }
 
-        .reviews-section h2 {
-            font-size: 40px;
-            margin-bottom: 25px;
-        }
+/* MAIN */
 
-        .review-card {
-            padding: 20px;
-            margin-bottom: 15px;
-            background: rgba(255,255,255,.05);
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 18px;
-        }
+.details-container {
 
-        .review-name {
-            font-weight: bold;
-        }
+    display:
+        grid;
 
-        .review-rating {
-            color: #b5c889;
-            margin: 5px 0;
-        }
+    grid-template-columns:
+        1.1fr
+        .9fr;
 
-        .review-date {
-            color: #777;
-            font-size: 12px;
-        }
+    gap:
+        45px;
 
-        .review-comment {
-            color: #9da49a;
-            margin-top: 10px;
-        }
+    align-items:
+        center;
 
-        @media (max-width: 800px) {
+}
 
-            .details-container {
-                grid-template-columns: 1fr;
-            }
 
-            .details-image {
-                min-height: 400px;
-            }
+/* IMAGE */
 
-        }
+.details-image {
 
-    </style>
+    width:
+        100%;
+
+    height:
+        580px;
+
+    object-fit:
+        cover;
+
+    border-radius:
+        30px;
+
+}
+
+
+/* CONTENT */
+
+.details-content {
+
+    max-width:
+        600px;
+
+}
+
+
+.category {
+
+    display:
+        inline-block;
+
+    padding:
+        7px
+        13px;
+
+    margin-bottom:
+        18px;
+
+    border-radius:
+        20px;
+
+    background:
+        rgba(181,200,137,.1);
+
+    color:
+        #b5c889;
+
+    font-size:
+        11px;
+
+    font-weight:
+        bold;
+
+    text-transform:
+        uppercase;
+
+    letter-spacing:
+        1px;
+
+}
+
+
+.details-content h1 {
+
+    font-size:
+        clamp(42px, 5vw, 70px);
+
+    line-height:
+        .95;
+
+    margin-bottom:
+        20px;
+
+}
+
+
+.location {
+
+    color:
+        #9da49a;
+
+    margin-bottom:
+        25px;
+
+}
+
+
+.description {
+
+    color:
+        #b8beb5;
+
+    line-height:
+        1.8;
+
+    margin-bottom:
+        30px;
+
+}
+
+
+/* INFO */
+
+.info-grid {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap:
+        12px;
+
+    margin-bottom:
+        30px;
+
+}
+
+
+.info-box {
+
+    padding:
+        17px;
+
+    border-radius:
+        15px;
+
+    background:
+        rgba(255,255,255,.05);
+
+    border:
+        1px solid
+        rgba(255,255,255,.08);
+
+}
+
+
+.info-box small {
+
+    display:
+        block;
+
+    color:
+        #777;
+
+    font-size:
+        10px;
+
+    text-transform:
+        uppercase;
+
+    margin-bottom:
+        5px;
+
+}
+
+
+.info-box strong {
+
+    font-size:
+        14px;
+
+}
+
+
+/* PRICE */
+
+.price-box {
+
+    display:
+        flex;
+
+    justify-content:
+        space-between;
+
+    align-items:
+        center;
+
+    margin-bottom:
+        25px;
+
+}
+
+
+.price-label {
+
+    color:
+        #9da49a;
+
+    font-size:
+        13px;
+
+}
+
+
+.price {
+
+    color:
+        #b5c889;
+
+    font-size:
+        30px;
+
+    font-weight:
+        bold;
+
+}
+
+
+/* BUTTON */
+
+.book-button {
+
+    display:
+        block;
+
+    width:
+        100%;
+
+    padding:
+        17px;
+
+    border-radius:
+        30px;
+
+    background:
+        #8b9b62;
+
+    color:
+        #10120d;
+
+    text-align:
+        center;
+
+    font-size:
+        16px;
+
+    font-weight:
+        bold;
+
+    transition:
+        .3s;
+
+}
+
+
+.book-button:hover {
+
+    transform:
+        translateY(-3px);
+
+    background:
+        #b5c889;
+
+}
+
+
+.login-note {
+
+    margin-top:
+        12px;
+
+    text-align:
+        center;
+
+    color:
+        #777;
+
+    font-size:
+        11px;
+
+}
+
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+    .details-container {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+
+    .details-image {
+
+        height:
+            400px;
+
+    }
+
+}
+
+
+@media (max-width: 500px) {
+
+    .details-page {
+
+        padding:
+            110px
+            5%
+            60px;
+
+    }
+
+
+    .details-image {
+
+        height:
+            320px;
+
+    }
+
+
+    .info-grid {
+
+        grid-template-columns:
+            1fr;
+
+    }
+
+}
+
+</style>
 
 </head>
 
+
 <body>
+
+
+<!-- NAVBAR -->
 
 <nav class="navbar">
 
-    <a href="../index.php" class="logo">
+    <a
+        href="../index.php"
+        class="logo"
+    >
+
         Explore<span>X</span>
+
     </a>
+
 
     <div class="nav-links">
 
         <a href="../index.php">
-            Home
+            Explore
         </a>
 
-        <?php if (isset($_SESSION["user_id"])): ?>
+
+        <?php if (
+            isset($_SESSION["user_id"])
+        ): ?>
 
             <a href="dashboard.php">
                 Dashboard
@@ -308,11 +529,6 @@ $total_reviews = $rating_data["total_reviews"];
                 Login
             </a>
 
-            <a href="../auth/register.php"
-               class="nav-button">
-                Get Started
-            </a>
-
         <?php endif; ?>
 
     </div>
@@ -320,266 +536,299 @@ $total_reviews = $rating_data["total_reviews"];
 </nav>
 
 
+<!-- DETAILS -->
+
 <main class="details-page">
 
-    <a href="../index.php"
-       class="back-link">
-        ← Back to Adventures
-    </a>
 
+<a
+    href="../index.php"
+    class="back-link"
+>
+    ← Back to Explore
+</a>
 
-    <div class="details-container">
 
+<div class="details-container">
 
-        <div class="details-image"></div>
 
+<!-- IMAGE -->
 
-        <div class="details-content">
+<div>
 
-            <p class="details-category">
+<?php if (
+    !empty($adventure["image_url"])
+): ?>
 
-                <?php
-                echo htmlspecialchars(
-                    $adventure["category_name"]
-                );
-                ?>
+<img
+    src="../assets/images/<?php
+        echo htmlspecialchars(
+            $adventure["image_url"]
+        );
+    ?>"
+    class="details-image"
 
-            </p>
+    alt="<?php
+        echo htmlspecialchars(
+            $adventure["adventure_name"]
+        );
+    ?>"
+>
 
+<?php else: ?>
 
-            <h1>
+<div
+    class="details-image"
+    style="
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background:#1a1d18;
+        color:#777;
+    "
+>
+    No Image
+</div>
 
-                <?php
-                echo htmlspecialchars(
-                    $adventure["adventure_name"]
-                );
-                ?>
+<?php endif; ?>
 
-            </h1>
+</div>
 
 
-            <p class="details-location">
+<!-- CONTENT -->
 
-                📍
+<div class="details-content">
 
-                <?php
-                echo htmlspecialchars(
-                    $adventure["location_name"]
-                );
-                ?>,
 
-                <?php
-                echo htmlspecialchars(
-                    $adventure["district"]
-                );
-                ?>
+<span class="category">
 
-            </p>
+<?php
+echo htmlspecialchars(
+    $adventure["category_name"]
+);
+?>
 
+</span>
 
-            <p class="details-description">
 
-                <?php
-                echo nl2br(
-                    htmlspecialchars(
-                        $adventure["description"]
-                    )
-                );
-                ?>
+<h1>
 
-            </p>
+<?php
+echo htmlspecialchars(
+    $adventure["adventure_name"]
+);
+?>
 
+</h1>
 
-            <div class="details-info">
 
-                <div class="info-box">
+<p class="location">
 
-                    <small>
-                        Difficulty
-                    </small>
+📍
 
-                    <strong>
-                        <?php
-                        echo htmlspecialchars(
-                            $adventure["difficulty_level"]
-                        );
-                        ?>
-                    </strong>
+<?php
+echo htmlspecialchars(
+    $adventure["location_name"]
+);
+?>
 
-                </div>
+,
 
+<?php
+echo htmlspecialchars(
+    $adventure["district"]
+);
+?>
 
-                <div class="info-box">
+</p>
 
-                    <small>
-                        Duration
-                    </small>
 
-                    <strong>
-                        <?php
-                        echo htmlspecialchars(
-                            $adventure["duration"]
-                        );
-                        ?>
-                    </strong>
+<p class="description">
 
-                </div>
+<?php
+echo nl2br(
+    htmlspecialchars(
+        $adventure["description"]
+    )
+);
+?>
 
+</p>
 
-                <div class="info-box">
 
-                    <small>
-                        Capacity
-                    </small>
+<!-- INFO -->
 
-                    <strong>
-                        <?php
-                        echo htmlspecialchars(
-                            $adventure["capacity"]
-                        );
-                        ?>
-                        People
-                    </strong>
+<div class="info-grid">
 
-                </div>
 
+<div class="info-box">
 
-                <div class="info-box">
+<small>
+    Difficulty
+</small>
 
-                    <small>
-                        Rating
-                    </small>
+<strong>
 
-                    <strong>
-                        ★ <?php echo $average_rating; ?>
+<?php
+echo htmlspecialchars(
+    $adventure[
+        "difficulty_level"
+    ]
+);
+?>
 
-                        (<?php echo $total_reviews; ?>)
-                    </strong>
+</strong>
 
-                </div>
+</div>
 
-            </div>
 
+<div class="info-box">
 
-            <div class="price">
+<small>
+    Duration
+</small>
 
-                Rs.
-                <?php
-                echo number_format(
-                    $adventure["price"],
-                    2
-                );
-                ?>
+<strong>
 
-                <small>
-                    / person
-                </small>
+<?php
+echo htmlspecialchars(
+    $adventure[
+        "duration"
+    ]
+);
+?>
 
-            </div>
+</strong>
 
+</div>
 
-            <?php if (isset($_SESSION["user_id"])): ?>
 
-                <a
-                    href="booking.php?id=<?php
-                        echo $adventure["adventure_id"];
-                    ?>"
-                    class="book-button"
-                >
-                    Book This Adventure →
-                </a>
+<div class="info-box">
 
-            <?php else: ?>
+<small>
+    Capacity
+</small>
 
-                <a
-                    href="../auth/login.php"
-                    class="book-button"
-                >
-                    Login to Book →
-                </a>
+<strong>
 
-            <?php endif; ?>
+<?php
+echo $adventure[
+    "capacity"
+];
+?>
 
-        </div>
+ people
 
-    </div>
+</strong>
 
+</div>
 
-    <section class="reviews-section">
 
-        <h2>
-            Reviews
-        </h2>
+<div class="info-box">
 
+<small>
+    Category
+</small>
 
-        <?php if ($reviews->num_rows > 0): ?>
+<strong>
 
-            <?php while ($review = $reviews->fetch_assoc()): ?>
+<?php
+echo htmlspecialchars(
+    $adventure[
+        "category_name"
+    ]
+);
+?>
 
-                <div class="review-card">
+</strong>
 
-                    <div class="review-name">
+</div>
 
-                        <?php
-                        echo htmlspecialchars(
-                            $review["name"]
-                        );
-                        ?>
 
-                    </div>
+</div>
 
 
-                    <div class="review-rating">
+<!-- PRICE -->
 
-                        <?php
-                        echo str_repeat(
-                            "★",
-                            (int)$review["rating"]
-                        );
-                        ?>
+<div class="price-box">
 
-                    </div>
+<span class="price-label">
 
+    Price per person
 
-                    <div class="review-date">
+</span>
 
-                        <?php
-                        echo htmlspecialchars(
-                            $review["review_date"]
-                        );
-                        ?>
 
-                    </div>
+<span class="price">
 
+    Rs.
 
-                    <div class="review-comment">
+    <?php
+    echo number_format(
+        $adventure["price"],
+        2
+    );
+    ?>
 
-                        <?php
-                        echo nl2br(
-                            htmlspecialchars(
-                                $review["comment"]
-                            )
-                        );
-                        ?>
+</span>
 
-                    </div>
+</div>
 
-                </div>
 
-            <?php endwhile; ?>
+<!-- BOOK -->
 
-        <?php else: ?>
+<?php if (
+    isset($_SESSION["user_id"])
+): ?>
 
-            <p style="color:#9da49a;">
-                No reviews yet. Be the first to review
-                this adventure!
-            </p>
 
-        <?php endif; ?>
+<a
+    href="book-adventure.php?id=<?php
+        echo $adventure[
+            "adventure_id"
+        ];
+    ?>"
+    class="book-button"
+>
+    Book This Adventure →
+</a>
 
-    </section>
+
+<?php else: ?>
+
+
+<a
+    href="../auth/login.php?redirect=<?php
+        echo urlencode(
+            "pages/adventure-details.php?id="
+            . $adventure_id
+        );
+    ?>"
+    class="book-button"
+>
+    Login to Book →
+</a>
+
+
+<p class="login-note">
+
+    You need an ExploreX account
+    to make a booking.
+
+</p>
+
+
+<?php endif; ?>
+
+
+</div>
+
+
+</div>
+
 
 </main>
+
 
 </body>
 
