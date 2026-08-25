@@ -19,7 +19,7 @@ if (
     !isset($_GET["id"]) ||
     !is_numeric($_GET["id"])
 ) {
-    header("Location: dashboard.php");
+    header("Location: my-bookings.php");
     exit();
 }
 
@@ -82,7 +82,7 @@ if ($result->num_rows !== 1) {
 
     $stmt->close();
 
-    header("Location: dashboard.php");
+    header("Location: my-bookings.php");
 
     exit();
 }
@@ -571,35 +571,11 @@ $stmt->close();
 
 <!-- NAVBAR -->
 
-<nav class="navbar">
-
-    <a
-        href="../index.php"
-        class="logo"
-    >
-
-        Explore<span>X</span>
-
-    </a>
-
-
-    <div class="nav-links">
-
-        <a href="../index.php">
-            Explore
-        </a>
-
-        <a href="dashboard.php">
-            Dashboard
-        </a>
-
-        <a href="../auth/logout.php">
-            Logout
-        </a>
-
-    </div>
-
-</nav>
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "../";
+?>
+<?php require __DIR__ . "/../includes/navbar.php"; ?>
 
 
 <!-- SUCCESS -->
@@ -801,7 +777,7 @@ echo htmlspecialchars(
 
 
 <a
-    href="dashboard.php"
+    href="my-bookings.php"
     class="button primary-button"
 >
     View My Bookings

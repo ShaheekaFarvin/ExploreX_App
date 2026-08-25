@@ -10,7 +10,7 @@ if (!isset($_SESSION["user_id"])) {
 }
 
 if ($_SESSION["role"] !== "ADMIN") {
-    header("Location: ../pages/dashboard.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -333,33 +333,11 @@ $recent_stmt = $conn->query("
 
 <!-- NAVIGATION -->
 
-<nav class="navbar">
-
-    <a
-        href="../index.php"
-        class="logo"
-    >
-        Explore<span>X</span>
-    </a>
-
-
-    <div class="nav-links">
-
-        <a href="../index.php">
-            Website
-        </a>
-
-        <a href="dashboard.php">
-            Dashboard
-        </a>
-
-        <a href="../auth/logout.php">
-            Logout
-        </a>
-
-    </div>
-
-</nav>
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "../";
+?>
+<?php require __DIR__ . "/../includes/navbar.php"; ?>
 
 
 <!-- ADMIN -->

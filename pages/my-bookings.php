@@ -101,27 +101,7 @@ $stmt->close();
 
 
     <style>
-
-        /* ==========================================
-           FIXED NAVIGATION
-        ========================================== */
-
-        .navbar {
-
-            position: fixed !important;
-
-            top: 0;
-            left: 0;
-            right: 0;
-
-            width: 100%;
-
-            z-index: 9999;
-
-        }
-
-
-        /* ==========================================
+/* ==========================================
            MY BOOKINGS PAGE
         ========================================== */
 
@@ -190,13 +170,19 @@ $stmt->close();
 
         .booking-card {
 
+            position: relative;
+
             width: 100%;
 
-            min-height: 205px;
+            min-height: 178px;
 
             display: flex;
 
-            align-items: stretch;
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 18px;
 
             overflow: hidden;
 
@@ -221,6 +207,14 @@ $stmt->close();
 
         }
 
+.booking-card:hover {
+
+            transform: translateY(-2px);
+
+            border-color: rgba(181,200,137,.25);
+
+        }
+
 
         /* ==========================================
            IMAGE
@@ -228,11 +222,13 @@ $stmt->close();
 
         .booking-image {
 
-            width: 190px;
+            width: 175px;
 
-            min-width: 190px;
+            min-width: 175px;
 
-            height: 205px;
+            height: 140px;
+
+            border-radius: 14px;
 
             background-position: center;
 
@@ -242,39 +238,10 @@ $stmt->close();
 
             position: relative;
 
-        }
-
-
-        /* ==========================================
-           IMAGE DARK OVERLAY
-        ========================================== */
-
-        .booking-image::after {
-
-            content: "";
-
-            position: absolute;
-
-            inset: 0;
-
-            background:
-
-                linear-gradient(
-
-                    to top,
-
-                    rgba(0,0,0,.65),
-
-                    transparent 60%
-
-                );
-
-            pointer-events: none;
+            overflow: hidden;
 
         }
-
-
-        /* ==========================================
+/* ==========================================
            STATUS
         ========================================== */
 
@@ -285,8 +252,6 @@ $stmt->close();
             top: 18px;
 
             right: 18px;
-
-            z-index: 2;
 
             padding: 7px 13px;
 
@@ -304,8 +269,7 @@ $stmt->close();
 
         }
 
-
-        .status-PENDING {
+.status-PENDING {
 
             color: #e6cf86;
 
@@ -334,7 +298,7 @@ $stmt->close();
 
             flex: 1;
 
-            padding: 22px 25px;
+            padding: 8px 130px 8px 0;
 
             display: flex;
 
@@ -644,10 +608,20 @@ $stmt->close();
 
             }
 
+            .booking-card {
+
+                align-items: stretch;
+
+                gap: 0;
+
+                padding: 14px;
+
+            }
+
 
             .booking-content {
 
-                padding: 18px;
+                padding: 18px 4px 4px;
 
             }
 
@@ -680,58 +654,11 @@ $stmt->close();
      NO DASHBOARD
 ================================================== -->
 
-<nav class="navbar">
-
-
-    <a href="../index.php"
-       class="logo">
-
-        Explore<span>X</span>
-
-    </a>
-
-
-    <div class="nav-links">
-
-
-        <a href="../index.php">
-
-            Home
-
-        </a>
-
-
-        <a href="../index.php#adventures">
-
-            Adventures
-
-        </a>
-
-
-        <a href="../index.php#about">
-
-            About
-
-        </a>
-
-
-        <a href="my-bookings.php">
-
-            My Bookings
-
-        </a>
-
-
-        <a href="../auth/logout.php">
-
-            Logout
-
-        </a>
-
-
-    </div>
-
-</nav>
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "../";
+?>
+<?php require __DIR__ . "/../includes/navbar.php"; ?>
 
 
 <!-- ==================================================
@@ -780,53 +707,18 @@ $stmt->close();
 
                 <div class="booking-card">
 
-
                     <!-- IMAGE -->
-
                     <div
                         class="booking-image"
+                        style="background-image: url('../assets/images/<?php echo htmlspecialchars($booking["image_url"]); ?>');"
+                    ></div>
 
-                        style="background-image:
-                            url('../assets/images/<?php
-
-                                echo htmlspecialchars(
-
-                                    $booking["image_url"]
-
-                                );
-
-                            ?>');"
+                    <!-- STATUS -->
+                    <span
+                        class="status status-<?php echo htmlspecialchars($booking["status"]); ?>"
                     >
-
-
-                        <span
-                            class="status status-<?php
-
-                                echo htmlspecialchars(
-
-                                    $booking["status"]
-
-                                );
-
-                            ?>"
-                        >
-
-                            <?php
-
-                            echo htmlspecialchars(
-
-                                $booking["status"]
-
-                            );
-
-                            ?>
-
-                        </span>
-
-
-                    </div>
-
-
+                        <?php echo htmlspecialchars($booking["status"]); ?>
+                    </span>
 
                     <!-- CONTENT -->
 

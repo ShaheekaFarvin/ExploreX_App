@@ -308,29 +308,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <body>
 
 
-<nav class="navbar">
-
-    <a href="../index.php" class="logo">
-        Explore<span>X</span>
-    </a>
-
-    <div class="nav-links">
-
-        <a href="../index.php">
-            Home
-        </a>
-
-        <a href="dashboard.php">
-            Dashboard
-        </a>
-
-        <a href="../auth/logout.php">
-            Logout
-        </a>
-
-    </div>
-
-</nav>
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "../";
+?>
+<?php require __DIR__ . "/../includes/navbar.php"; ?>
 
 
 <main class="booking-page">

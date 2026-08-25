@@ -492,48 +492,11 @@ echo htmlspecialchars(
 
 <!-- NAVBAR -->
 
-<nav class="navbar">
-
-    <a
-        href="../index.php"
-        class="logo"
-    >
-
-        Explore<span>X</span>
-
-    </a>
-
-
-    <div class="nav-links">
-
-        <a href="../index.php">
-            Explore
-        </a>
-
-
-        <?php if (
-            isset($_SESSION["user_id"])
-        ): ?>
-
-            <a href="dashboard.php">
-                Dashboard
-            </a>
-
-            <a href="../auth/logout.php">
-                Logout
-            </a>
-
-        <?php else: ?>
-
-            <a href="../auth/login.php">
-                Login
-            </a>
-
-        <?php endif; ?>
-
-    </div>
-
-</nav>
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "../";
+?>
+<?php require __DIR__ . "/../includes/navbar.php"; ?>
 
 
 <!-- DETAILS -->

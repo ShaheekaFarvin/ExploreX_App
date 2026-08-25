@@ -65,37 +65,6 @@ if ($result) {
         rel="stylesheet"
         href="assets/css/style.css"
     >
-
-
-    <!-- =====================================
-         FIXED NAVIGATION
-    ====================================== -->
-
-    <style>
-
-        .navbar {
-
-            position: fixed !important;
-
-            top: 0;
-            left: 0;
-            right: 0;
-
-            width: 100%;
-
-            z-index: 9999;
-
-        }
-
-
-        body {
-
-            padding-top: 0;
-
-        }
-
-    </style>
-
 </head>
 
 
@@ -106,124 +75,11 @@ if ($result) {
      NAVIGATION
 ===================================== -->
 
-<nav class="navbar">
-
-
-    <!-- LOGO -->
-
-    <a
-        href="index.php"
-        class="logo"
-    >
-
-        Explore<span>X</span>
-
-    </a>
-
-
-    <div class="nav-links">
-
-
-        <!-- HOME -->
-
-        <a href="index.php">
-
-            Home
-
-        </a>
-
-
-        <!-- ADVENTURES -->
-
-        <a href="index.php#adventures">
-
-            Adventures
-
-        </a>
-
-
-        <!-- ABOUT -->
-
-        <a href="index.php#about">
-
-            About
-
-        </a>
-
-
-        <?php if (isset($_SESSION["user_id"])): ?>
-
-
-            <?php if ($_SESSION["role"] === "ADMIN"): ?>
-
-
-                <!-- =================================
-                     ADMIN ONLY
-                ================================== -->
-
-                <a href="admin/dashboard.php">
-
-                    Dashboard
-
-                </a>
-
-
-            <?php else: ?>
-
-
-                <!-- =================================
-                     NORMAL USER ONLY
-                ================================== -->
-
-                <a href="pages/my-bookings.php">
-
-                    My Booking
-
-                </a>
-
-
-            <?php endif; ?>
-
-
-            <!-- LOGOUT -->
-
-            <a href="auth/logout.php">
-
-                Logout
-
-            </a>
-
-
-        <?php else: ?>
-
-
-            <!-- =================================
-                 GUEST
-            ================================== -->
-
-            <a href="auth/login.php">
-
-                Login
-
-            </a>
-
-
-            <a
-                href="auth/register.php"
-                class="nav-button"
-            >
-
-                Get Started
-
-            </a>
-
-
-        <?php endif; ?>
-
-
-    </div>
-
-</nav>
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "";
+?>
+<?php require __DIR__ . "/includes/navbar.php"; ?>
 
 
 
