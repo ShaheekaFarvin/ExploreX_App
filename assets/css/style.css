@@ -237,13 +237,28 @@ a {
 }
 
 .adventure-card {
+    display: block;
+    color: inherit;
+    text-decoration: none;
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: 25px;
     background: var(--glass);
     backdrop-filter: blur(20px);
+    transition: 0.3s;
 }
 
+.adventure-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(181, 200, 137, 0.35);
+}
+.adventure-image {
+    height: 300px;
+    position: relative;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
 .adventure-image {
     height: 300px;
     position: relative;

@@ -1,5 +1,43 @@
 <?php
+
 session_start();
+
+require_once "config/db.php";
+
+$adventures = [];
+
+$sql = "
+    SELECT 
+        a.adventure_id,
+        a.adventure_name,
+        a.description,
+        a.price,
+        a.difficulty_level,
+        a.duration,
+        a.capacity,
+        c.category_name,
+        l.location_name,
+        l.district,
+        ai.image_url
+    FROM adventures a
+    INNER JOIN categories c
+        ON a.category_id = c.category_id
+    INNER JOIN locations l
+        ON a.location_id = l.location_id
+    LEFT JOIN adventure_images ai
+        ON a.adventure_id = ai.adventure_id
+        AND ai.is_main = TRUE
+    ORDER BY a.created_at DESC
+";
+
+$result = $conn->query($sql);
+
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $adventures[] = $row;
+    }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -164,140 +202,138 @@ session_start();
 
     <!-- Adventures -->
 
-    <section class="adventures"
-             id="adventures">
+   <section class="adventures" id="adventures">
 
-        <div class="section-heading">
+    <div class="section-heading">
 
-            <p class="eyebrow">
-                POPULAR DESTINATIONS
+        <p class="eyebrow">
+            POPULAR DESTINATIONS
+        </p>
+
+        <h2>
+            Featured Adventures
+        </h2>
+
+    </div>
+
+    <div class="adventure-grid">
+
+        <?php if (count($adventures) > 0): ?>
+
+            <?php foreach ($adventures as $adventure): ?>
+
+    <a
+        href="pages/adventure-details.php?id=<?php
+            echo $adventure["adventure_id"];
+        ?>"
+        class="adventure-card"
+    >
+
+        <div
+            class="adventure-image"
+            style="background-image:
+                linear-gradient(
+                    to top,
+                    rgba(0, 0, 0, 0.8),
+                    transparent
+                ),
+                url('assets/images/<?php
+                    echo htmlspecialchars($adventure["image_url"]);
+                ?>');"
+        >
+
+            <span>
+                <?php
+                echo htmlspecialchars(
+                    $adventure["category_name"]
+                );
+                ?>
+            </span>
+
+        </div>
+
+
+        <div class="adventure-content">
+
+            <p class="location">
+                📍
+                <?php
+                echo htmlspecialchars(
+                    $adventure["location_name"]
+                );
+                ?>,
+                <?php
+                echo htmlspecialchars(
+                    $adventure["district"]
+                );
+                ?>
             </p>
 
-            <h2>
-                Featured Adventures
-            </h2>
 
-        </div>
-
-        <div class="adventure-grid">
-
-            <div class="adventure-card">
-
-                <div class="adventure-image">
-                    <span>Mountain</span>
-                </div>
-
-                <div class="adventure-content">
-
-                    <p class="location">
-                        📍 Knuckles, Sri Lanka
-                    </p>
-
-                    <h3>
-                        Knuckles Mountain Trek
-                    </h3>
-
-                    <p>
-                        Explore breathtaking mountain
-                        landscapes and hidden trails.
-                    </p>
-
-                    <div class="adventure-footer">
-
-                        <span>
-                            ★ 4.8
-                        </span>
-
-                        <span>
-                            From Rs. 5,000
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
+            <h3>
+                <?php
+                echo htmlspecialchars(
+                    $adventure["adventure_name"]
+                );
+                ?>
+            </h3>
 
 
-            <div class="adventure-card">
-
-                <div class="adventure-image adventure-two">
-                    <span>Water</span>
-                </div>
-
-                <div class="adventure-content">
-
-                    <p class="location">
-                        📍 Kitulgala, Sri Lanka
-                    </p>
-
-                    <h3>
-                        River Rafting
-                    </h3>
-
-                    <p>
-                        Experience an exciting adventure
-                        through the beautiful river.
-                    </p>
-
-                    <div class="adventure-footer">
-
-                        <span>
-                            ★ 4.7
-                        </span>
-
-                        <span>
-                            From Rs. 4,500
-                        </span>
-
-                    </div>
-
-                </div>
-
-            </div>
+            <p>
+                <?php
+                echo htmlspecialchars(
+                    $adventure["description"]
+                );
+                ?>
+            </p>
 
 
-            <div class="adventure-card">
+            <div class="adventure-footer">
 
-                <div class="adventure-image adventure-three">
-                    <span>Hiking</span>
-                </div>
+                <span>
+                    <?php
+                    echo htmlspecialchars(
+                        $adventure["difficulty_level"]
+                    );
+                    ?>
+                </span>
 
-                <div class="adventure-content">
-
-                    <p class="location">
-                        📍 Ella, Sri Lanka
-                    </p>
-
-                    <h3>
-                        Ella Mountain Hike
-                    </h3>
-
-                    <p>
-                        Walk through stunning landscapes
-                        and discover hidden views.
-                    </p>
-
-                    <div class="adventure-footer">
-
-                        <span>
-                            ★ 4.9
-                        </span>
-
-                        <span>
-                            From Rs. 3,500
-                        </span>
-
-                    </div>
-
-                </div>
+                <span>
+                    Rs.
+                    <?php
+                    echo number_format(
+                        $adventure["price"],
+                        2
+                    );
+                    ?>
+                </span>
 
             </div>
 
         </div>
 
-    </section>
+    </a>
 
+<?php endforeach; ?>
+
+        <?php else: ?>
+
+            <div class="glass-card">
+
+                <h3>No adventures available</h3>
+
+                <p>
+                    Adventures will appear here once
+                    they are added.
+                </p>
+
+            </div>
+
+        <?php endif; ?>
+
+    
+
+</section>
 
     <!-- About -->
 
