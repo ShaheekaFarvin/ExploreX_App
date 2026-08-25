@@ -222,76 +222,99 @@ if ($result) {
 
             <?php foreach ($adventures as $adventure): ?>
 
-                <div class="adventure-card">
+    <a
+        href="pages/adventure-details.php?id=<?php
+            echo $adventure["adventure_id"];
+        ?>"
+        class="adventure-card"
+    >
 
-                    <div
-    class="adventure-image"
-    style="background-image:
-        linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.8),
-            transparent
-        ),
-        url('assets/images/<?php
-            echo htmlspecialchars($adventure["image_url"]);
-        ?>');"
->
+        <div
+            class="adventure-image"
+            style="background-image:
+                linear-gradient(
+                    to top,
+                    rgba(0, 0, 0, 0.8),
+                    transparent
+                ),
+                url('assets/images/<?php
+                    echo htmlspecialchars($adventure["image_url"]);
+                ?>');"
+        >
 
-    <span>
-        <?php
-        echo htmlspecialchars($adventure["category_name"]);
-        ?>
-    </span>
+            <span>
+                <?php
+                echo htmlspecialchars(
+                    $adventure["category_name"]
+                );
+                ?>
+            </span>
 
-</div>
+        </div>
 
-                    <div class="adventure-content">
 
-                        <p class="location">
-                            📍
-                            <?php echo htmlspecialchars(
-                                $adventure["location_name"]
-                            ); ?>,
-                            <?php echo htmlspecialchars(
-                                $adventure["district"]
-                            ); ?>
-                        </p>
+        <div class="adventure-content">
 
-                        <h3>
-                            <?php echo htmlspecialchars(
-                                $adventure["adventure_name"]
-                            ); ?>
-                        </h3>
+            <p class="location">
+                📍
+                <?php
+                echo htmlspecialchars(
+                    $adventure["location_name"]
+                );
+                ?>,
+                <?php
+                echo htmlspecialchars(
+                    $adventure["district"]
+                );
+                ?>
+            </p>
 
-                        <p>
-                            <?php echo htmlspecialchars(
-                                $adventure["description"]
-                            ); ?>
-                        </p>
 
-                        <div class="adventure-footer">
+            <h3>
+                <?php
+                echo htmlspecialchars(
+                    $adventure["adventure_name"]
+                );
+                ?>
+            </h3>
 
-                            <span>
-                                <?php echo htmlspecialchars(
-                                    $adventure["difficulty_level"]
-                                ); ?>
-                            </span>
 
-                            <span>
-                                Rs.
-                                <?php echo number_format(
-                                    $adventure["price"],
-                                    2
-                                ); ?>
-                            </span>
+            <p>
+                <?php
+                echo htmlspecialchars(
+                    $adventure["description"]
+                );
+                ?>
+            </p>
 
-                        </div>
 
-                    </div>
+            <div class="adventure-footer">
 
-                </div>
+                <span>
+                    <?php
+                    echo htmlspecialchars(
+                        $adventure["difficulty_level"]
+                    );
+                    ?>
+                </span>
 
-            <?php endforeach; ?>
+                <span>
+                    Rs.
+                    <?php
+                    echo number_format(
+                        $adventure["price"],
+                        2
+                    );
+                    ?>
+                </span>
+
+            </div>
+
+        </div>
+
+    </a>
+
+<?php endforeach; ?>
 
         <?php else: ?>
 
@@ -308,7 +331,7 @@ if ($result) {
 
         <?php endif; ?>
 
-    </div>
+    
 
 </section>
 
