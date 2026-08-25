@@ -75,6 +75,28 @@ $adventure = $result->fetch_assoc();
 
 $stmt->close();
 
+// Load every image for the adventure so the details page has a gallery.
+$image_stmt = $conn->prepare("
+    SELECT image_url, is_main
+    FROM adventure_images
+    WHERE adventure_id = ?
+    ORDER BY is_main DESC, image_url ASC
+");
+$image_stmt->bind_param("i", $adventure_id);
+$image_stmt->execute();
+$image_result = $image_stmt->get_result();
+$gallery_images = [];
+while ($image_row = $image_result->fetch_assoc()) {
+    if (!empty($image_row["image_url"])) {
+        $gallery_images[] = $image_row["image_url"];
+    }
+}
+$image_stmt->close();
+
+if (empty($gallery_images) && !empty($adventure["image_url"])) {
+    $gallery_images[] = $adventure["image_url"];
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -153,24 +175,7 @@ echo htmlspecialchars(
 }
 
 
-/* IMAGE */
-
-.details-image {
-
-    width:
-        100%;
-
-    height:
-        580px;
-
-    object-fit:
-        cover;
-
-    border-radius:
-        30px;
-
-}
-
+/* IMAGE GALLERY */
 
 /* CONTENT */
 
@@ -492,48 +497,11 @@ echo htmlspecialchars(
 
 <!-- NAVBAR -->
 
-<nav class="navbar">
-
-    <a
-        href="../index.php"
-        class="logo"
-    >
-
-        Explore<span>X</span>
-
-    </a>
-
-
-    <div class="nav-links">
-
-        <a href="../index.php">
-            Explore
-        </a>
-
-
-        <?php if (
-            isset($_SESSION["user_id"])
-        ): ?>
-
-            <a href="dashboard.php">
-                Dashboard
-            </a>
-
-            <a href="../auth/logout.php">
-                Logout
-            </a>
-
-        <?php else: ?>
-
-            <a href="../auth/login.php">
-                Login
-            </a>
-
-        <?php endif; ?>
-
-    </div>
-
-</nav>
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "../";
+?>
+<?php require __DIR__ . "/../includes/navbar.php"; ?>
 
 
 <!-- DETAILS -->
@@ -552,46 +520,29 @@ echo htmlspecialchars(
 <div class="details-container">
 
 
-<!-- IMAGE -->
-
-<div>
-
-<?php if (
-    !empty($adventure["image_url"])
-): ?>
-
-<img
-    src="../assets/images/<?php
-        echo htmlspecialchars(
-            $adventure["image_url"]
-        );
-    ?>"
-    class="details-image"
-
-    alt="<?php
-        echo htmlspecialchars(
-            $adventure["adventure_name"]
-        );
-    ?>"
->
-
-<?php else: ?>
-
-<div
-    class="details-image"
-    style="
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background:#1a1d18;
-        color:#777;
-    "
->
-    No Image
-</div>
-
-<?php endif; ?>
-
+<!-- IMAGE GALLERY -->
+<div class="details-image-gallery">
+    <?php if (!empty($gallery_images)): ?>
+        <div class="details-main-image-wrap">
+            <img
+                id="detailsMainImage"
+                class="details-main-image"
+                src="../assets/images/<?php echo htmlspecialchars($gallery_images[0]); ?>"
+                alt="<?php echo htmlspecialchars($adventure["adventure_name"]); ?>"
+            >
+        </div>
+        <?php if (count($gallery_images) > 1): ?>
+            <div class="details-thumbs">
+                <?php foreach ($gallery_images as $index => $gallery_image): ?>
+                    <button type="button" class="details-thumb <?php echo $index === 0 ? 'active' : ''; ?>" onclick="showAdventureImage(this, '<?php echo htmlspecialchars('../assets/images/' . $gallery_image, ENT_QUOTES); ?>')">
+                        <img src="../assets/images/<?php echo htmlspecialchars($gallery_image); ?>" alt="Adventure image <?php echo $index + 1; ?>">
+                    </button>
+                <?php endforeach; ?>
+            </div>
+        <?php endif; ?>
+    <?php else: ?>
+        <div class="details-main-image-wrap" style="display:grid;place-items:center;color:#777">NO IMAGE</div>
+    <?php endif; ?>
 </div>
 
 
@@ -829,6 +780,17 @@ echo htmlspecialchars(
 
 </main>
 
+
+<script>
+function showAdventureImage(button, src) {
+    const main = document.getElementById('detailsMainImage');
+    if (!main) return;
+    main.style.opacity = '0.35';
+    setTimeout(() => { main.src = src; main.style.opacity = '1'; }, 120);
+    document.querySelectorAll('.details-thumb').forEach(el => el.classList.remove('active'));
+    button.classList.add('active');
+}
+</script>
 
 </body>
 

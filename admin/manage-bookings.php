@@ -10,7 +10,7 @@ if (!isset($_SESSION["user_id"])) {
 }
 
 if ($_SESSION["role"] !== "ADMIN") {
-    header("Location: ../pages/dashboard.php");
+    header("Location: ../index.php");
     exit();
 }
 
@@ -72,9 +72,42 @@ if (
 
 
 // Get bookings
+$filter_status = isset($_GET["status"]) ? strtoupper(trim($_GET["status"])) : "";
+$allowed_filters = ["PENDING", "CONFIRMED", "CANCELLED"];
 
-$stmt = $conn->prepare("
-    SELECT
+if (in_array($filter_status, $allowed_filters, true)) {
+    $stmt = $conn->prepare("
+        SELECT
+
+            b.booking_id,
+            b.booking_date,
+            b.participants,
+            b.total_amount,
+            b.status,
+
+            u.user_id,
+            u.name AS user_name,
+            u.email AS user_email,
+
+            a.adventure_id,
+            a.adventure_name,
+
+            l.location_name,
+            l.district
+
+        FROM bookings b
+
+        INNER JOIN users u ON b.user_id = u.user_id
+        INNER JOIN adventures a ON b.adventure_id = a.adventure_id
+        INNER JOIN locations l ON a.location_id = l.location_id
+
+        WHERE b.status = ?
+        ORDER BY b.booking_date DESC
+    ");
+    $stmt->bind_param("s", $filter_status);
+} else {
+    $stmt = $conn->prepare("
+        SELECT
 
         b.booking_id,
         b.booking_date,
@@ -105,7 +138,8 @@ $stmt = $conn->prepare("
 
     ORDER BY
         b.booking_date DESC
-");
+    ");
+}
 
 $stmt->execute();
 
@@ -461,39 +495,13 @@ $stmt->close();
 
 <!-- NAVIGATION -->
 
-<nav class="navbar">
+<!-- SHARED EXPLOREX NAVIGATION -->
+<?php
+$base_path = "../";
+?>
+<?php require __DIR__ . "/../includes/navbar.php"; ?>
 
-    <a
-        href="../index.php"
-        class="logo"
-    >
-
-        Explore<span>X</span>
-
-    </a>
-
-
-    <div class="nav-links">
-
-        <a href="dashboard.php">
-            Dashboard
-        </a>
-
-        <a href="manage-adventures.php">
-            Adventures
-        </a>
-
-        <a href="../index.php">
-            Website
-        </a>
-
-        <a href="../auth/logout.php">
-            Logout
-        </a>
-
-    </div>
-
-</nav>
+<div class="admin-back-wrap"><a class="admin-back-link" href="dashboard.php">← BACK TO DASHBOARD</a></div>
 
 
 <main class="manage-page">
@@ -506,7 +514,7 @@ $stmt->close();
     </p>
 
     <h1>
-        Bookings
+        <?php echo $filter_status ? htmlspecialchars($filter_status) . " BOOKINGS" : "BOOKINGS"; ?>
     </h1>
 
     <p>
