@@ -71,6 +71,13 @@ require __DIR__ . "/includes/navbar.php";
 
 <!-- HERO -->
 <section class="hero home-hero">
+    <div class="hero-particle-field" aria-hidden="true">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="hero-light-sweep" aria-hidden="true"></div>
+    <div class="hero-cursor-glow" aria-hidden="true"></div>
     <div class="hero-glow hero-glow-one"></div>
     <div class="hero-glow hero-glow-two"></div>
     <div class="hero-content">
@@ -94,7 +101,7 @@ require __DIR__ . "/includes/navbar.php";
         <div class="hero-orbit orbit-one"></div>
         <div class="hero-orbit orbit-two"></div>
         <div class="hero-image-card">
-            <img src="https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1100&q=90" alt="Sri Lankan mountain landscape">
+            <img src="assets/images/rafting.png" alt="Sri Lankan mountain landscape">
             <div class="hero-image-overlay"></div>
             <div class="hero-image-caption">
                 <span>EXPLORE SRI LANKA</span>
