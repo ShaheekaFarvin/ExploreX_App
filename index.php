@@ -28,25 +28,25 @@ if (isset($stmt)) {
 $category_cards = [
     [
         'name' => 'Hiking',
-        'icon' => '🥾',
+        'icon' => '',
         'image' => 'https://images.unsplash.com/photo-1551632811-561732d1e306?auto=format&fit=crop&w=900&q=85',
         'text' => 'Discover scenic trails, mountain views and unforgettable climbs.'
     ],
     [
         'name' => 'Camping',
-        'icon' => '⛺',
+        'icon' => '',
         'image' => 'https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&w=900&q=85',
         'text' => 'Slow down, reconnect with nature and sleep beneath the stars.'
     ],
     [
         'name' => 'Water Sports',
-        'icon' => '🌊',
+        'icon' => '',
         'image' => 'https://images.unsplash.com/photo-1530053969600-caed2596d242?auto=format&fit=crop&w=900&q=85',
         'text' => 'Feel the rush with rafting, rivers and exciting water adventures.'
     ],
     [
         'name' => 'Rock Climbing',
-        'icon' => '🧗',
+        'icon' => '',
         'image' => 'https://images.unsplash.com/photo-1522163182402-834f871fd851?auto=format&fit=crop&w=900&q=85',
         'text' => 'Push your limits and take on new heights with confidence.'
     ]
