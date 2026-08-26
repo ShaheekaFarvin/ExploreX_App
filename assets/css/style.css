@@ -1936,3 +1936,319 @@ body.auth-page .form-row { gap:12px; }
     margin-left: auto;
     margin-right: auto;
 }
+
+
+/* =========================================================
+   FINAL AMBIENT FOREGROUND MOTION — ADVENTURE THEME
+========================================================= */
+.home-hero {
+    isolation: isolate;
+}
+
+.hero-particle-field {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.hero-particle-field span {
+    --size: 3px;
+    position: absolute;
+    width: var(--size);
+    height: var(--size);
+    left: var(--x);
+    top: var(--y);
+    border-radius: 50%;
+    background: rgba(218, 235, 177, .78);
+    box-shadow: 0 0 12px rgba(181,200,137,.55), 0 0 28px rgba(139,155,98,.22);
+    opacity: 0;
+    animation: particleDrift var(--duration) ease-in-out var(--delay) infinite;
+}
+
+.hero-particle-field span:nth-child(1)  { --x: 8%;  --y: 24%; --size: 2px; --duration: 6s;  --delay: -1s; }
+.hero-particle-field span:nth-child(2)  { --x: 17%; --y: 68%; --size: 3px; --duration: 8s;  --delay: -4s; }
+.hero-particle-field span:nth-child(3)  { --x: 28%; --y: 32%; --size: 2px; --duration: 7s;  --delay: -2s; }
+.hero-particle-field span:nth-child(4)  { --x: 39%; --y: 78%; --size: 3px; --duration: 9s;  --delay: -6s; }
+.hero-particle-field span:nth-child(5)  { --x: 48%; --y: 18%; --size: 2px; --duration: 6.5s;--delay: -3s; }
+.hero-particle-field span:nth-child(6)  { --x: 56%; --y: 64%; --size: 3px; --duration: 8.5s;--delay: -5s; }
+.hero-particle-field span:nth-child(7)  { --x: 64%; --y: 27%; --size: 2px; --duration: 7.5s;--delay: -1.5s; }
+.hero-particle-field span:nth-child(8)  { --x: 72%; --y: 78%; --size: 3px; --duration: 9.5s;--delay: -7s; }
+.hero-particle-field span:nth-child(9)  { --x: 81%; --y: 17%; --size: 2px; --duration: 6s;  --delay: -2.5s; }
+.hero-particle-field span:nth-child(10) { --x: 91%; --y: 52%; --size: 3px; --duration: 8s;  --delay: -4.5s; }
+.hero-particle-field span:nth-child(11) { --x: 12%; --y: 45%; --size: 2px; --duration: 7s;  --delay: -5.5s; }
+.hero-particle-field span:nth-child(12) { --x: 34%; --y: 12%; --size: 3px; --duration: 8.8s;--delay: -2s; }
+.hero-particle-field span:nth-child(13) { --x: 44%; --y: 54%; --size: 2px; --duration: 6.8s;--delay: -6.5s; }
+.hero-particle-field span:nth-child(14) { --x: 69%; --y: 48%; --size: 3px; --duration: 9s;  --delay: -3.5s; }
+.hero-particle-field span:nth-child(15) { --x: 77%; --y: 88%; --size: 2px; --duration: 7.8s;--delay: -1.8s; }
+.hero-particle-field span:nth-child(16) { --x: 87%; --y: 32%; --size: 3px; --duration: 8.6s;--delay: -5.8s; }
+.hero-particle-field span:nth-child(17) { --x: 23%; --y: 88%; --size: 2px; --duration: 6.6s;--delay: -3.2s; }
+.hero-particle-field span:nth-child(18) { --x: 59%; --y: 40%; --size: 2px; --duration: 7.2s;--delay: -4.2s; }
+
+@keyframes particleDrift {
+    0%, 100% { opacity: 0; transform: translate3d(0, 16px, 0) scale(.7); }
+    18%, 72% { opacity: .72; }
+    50% { opacity: 1; transform: translate3d(10px, -28px, 0) scale(1.2); }
+}
+
+.hero-light-sweep {
+    position: absolute;
+    z-index: 1;
+    top: -20%;
+    left: -25%;
+    width: 22%;
+    height: 150%;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgba(220,235,185,.08), transparent);
+    filter: blur(8px);
+    transform: rotate(16deg);
+    animation: lightSweep 11s ease-in-out infinite;
+}
+
+@keyframes lightSweep {
+    0%, 58% { left: -28%; opacity: 0; }
+    65% { opacity: 1; }
+    82%, 100% { left: 112%; opacity: 0; }
+}
+
+.hero-cursor-glow {
+    position: absolute;
+    z-index: 1;
+    width: 260px;
+    height: 260px;
+    left: calc(50% + var(--cursor-x, 0px));
+    top: calc(50% + var(--cursor-y, 0px));
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(181,200,137,.10), transparent 68%);
+    filter: blur(18px);
+    pointer-events: none;
+    transition: left .35s ease-out, top .35s ease-out;
+}
+
+.hero-content,
+.hero-visual {
+    z-index: 2;
+}
+
+.hero-image-card {
+    transition: box-shadow .45s ease;
+}
+
+.hero-image-card::after {
+    content: "";
+    position: absolute;
+    inset: -40% -80%;
+    background: linear-gradient(110deg, transparent 42%, rgba(255,255,255,.13) 50%, transparent 58%);
+    transform: translateX(-70%) rotate(8deg);
+    pointer-events: none;
+    animation: imageGlint 8s ease-in-out infinite;
+}
+
+@keyframes imageGlint {
+    0%, 55% { transform: translateX(-70%) rotate(8deg); opacity: 0; }
+    65% { opacity: 1; }
+    78%, 100% { transform: translateX(70%) rotate(8deg); opacity: 0; }
+}
+
+/* Subtle lift + shine on cards without making the page feel busy. */
+.category-card,
+.adventure-card {
+    will-change: transform;
+}
+
+.category-card::after,
+.adventure-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.055) 50%, transparent 65%);
+    transform: translateX(-120%);
+    transition: transform .7s ease;
+}
+
+.category-card:hover::after,
+.adventure-card:hover::after {
+    transform: translateX(120%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-particle-field span,
+    .hero-light-sweep,
+    .hero-image-card::after,
+    .hero h1,
+    .hero h1 span,
+    .hero-content .eyebrow,
+    .hero-orbit,
+    .floating-badge,
+    .hero-image-card {
+        animation: none !important;
+    }
+    .category-card::after,
+    .adventure-card::after {
+        transition: none !important;
+    }
+}
+
+@media (max-width: 700px) {
+    .hero-particle-field span:nth-child(n+13) { display: none; }
+    .hero-cursor-glow { width: 190px; height: 190px; opacity: .65; }
+    .hero-light-sweep { width: 30%; }
+}
+
+
+/* =========================================================
+   GLOBAL FOREGROUND PARTICLES
+   ========================================================= */
+.site-particle-field {
+    position: fixed;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: .72;
+}
+
+.site-particle-field span {
+    position: absolute;
+    left: var(--px);
+    top: var(--py);
+    width: var(--ps);
+    height: var(--ps);
+    border-radius: 50%;
+    background: rgba(181, 200, 137, .85);
+    box-shadow: 0 0 10px rgba(181, 200, 137, .48), 0 0 22px rgba(139, 155, 98, .22);
+    animation: siteParticleFloat var(--pd) ease-in-out var(--pdelay) infinite;
+}
+
+.site-particle-field span:nth-child(1)  { --px: 4%;  --py: 18%; --ps: 2px; --pd: 7s;   --pdelay: -2s; }
+.site-particle-field span:nth-child(2)  { --px: 11%; --py: 71%; --ps: 3px; --pd: 9s;   --pdelay: -5s; }
+.site-particle-field span:nth-child(3)  { --px: 18%; --py: 39%; --ps: 2px; --pd: 6.5s; --pdelay: -1s; }
+.site-particle-field span:nth-child(4)  { --px: 25%; --py: 84%; --ps: 2px; --pd: 8s;   --pdelay: -6s; }
+.site-particle-field span:nth-child(5)  { --px: 32%; --py: 22%; --ps: 3px; --pd: 7.5s; --pdelay: -3s; }
+.site-particle-field span:nth-child(6)  { --px: 40%; --py: 66%; --ps: 2px; --pd: 10s;  --pdelay: -7s; }
+.site-particle-field span:nth-child(7)  { --px: 47%; --py: 12%; --ps: 2px; --pd: 6s;   --pdelay: -2.5s; }
+.site-particle-field span:nth-child(8)  { --px: 54%; --py: 89%; --ps: 3px; --pd: 9s;   --pdelay: -4s; }
+.site-particle-field span:nth-child(9)  { --px: 61%; --py: 31%; --ps: 2px; --pd: 7s;   --pdelay: -5.5s; }
+.site-particle-field span:nth-child(10) { --px: 68%; --py: 73%; --ps: 2px; --pd: 8.5s; --pdelay: -1.5s; }
+.site-particle-field span:nth-child(11) { --px: 74%; --py: 17%; --ps: 3px; --pd: 6.8s; --pdelay: -3.5s; }
+.site-particle-field span:nth-child(12) { --px: 81%; --py: 56%; --ps: 2px; --pd: 10s;  --pdelay: -8s; }
+.site-particle-field span:nth-child(13) { --px: 88%; --py: 28%; --ps: 2px; --pd: 7.8s; --pdelay: -2.2s; }
+.site-particle-field span:nth-child(14) { --px: 94%; --py: 82%; --ps: 3px; --pd: 9.2s; --pdelay: -6.2s; }
+.site-particle-field span:nth-child(15) { --px: 7%;  --py: 48%; --ps: 2px; --pd: 8.2s; --pdelay: -4.4s; }
+.site-particle-field span:nth-child(16) { --px: 36%; --py: 48%; --ps: 2px; --pd: 7.2s; --pdelay: -1.8s; }
+.site-particle-field span:nth-child(17) { --px: 58%; --py: 45%; --ps: 3px; --pd: 8.8s; --pdelay: -5.2s; }
+.site-particle-field span:nth-child(18) { --px: 92%; --py: 43%; --ps: 2px; --pd: 6.6s; --pdelay: -2.8s; }
+.site-particle-field span:nth-child(19) { --px: 15%; --py: 92%; --ps: 2px; --pd: 9.5s; --pdelay: -7.5s; }
+.site-particle-field span:nth-child(20) { --px: 45%; --py: 94%; --ps: 2px; --pd: 7.4s; --pdelay: -3.8s; }
+.site-particle-field span:nth-child(21) { --px: 70%; --py: 91%; --ps: 2px; --pd: 8.4s; --pdelay: -6.8s; }
+.site-particle-field span:nth-child(22) { --px: 84%; --py: 68%; --ps: 2px; --pd: 7.6s; --pdelay: -4.8s; }
+.site-particle-field span:nth-child(23) { --px: 3%;  --py: 93%; --ps: 3px; --pd: 10.5s; --pdelay: -9s; }
+.site-particle-field span:nth-child(24) { --px: 97%; --py: 13%; --ps: 2px; --pd: 8.7s; --pdelay: -5.7s; }
+
+@keyframes siteParticleFloat {
+    0%, 100% { transform: translate3d(0, 0, 0) scale(.75); opacity: .18; }
+    35% { opacity: .9; }
+    50% { transform: translate3d(10px, -18px, 0) scale(1.15); opacity: 1; }
+    75% { opacity: .45; }
+}
+
+/* Global adventure particle field is intentionally visible on every page, including Home.
+   The dedicated hero particle markup is hidden on Home to avoid duplicate particles. */
+body:has(.home-hero) .hero-particle-field { display: none; }
+
+.site-particle-field span {
+    background: rgba(218, 235, 177, .78);
+    box-shadow: 0 0 12px rgba(181,200,137,.55), 0 0 28px rgba(139,155,98,.22);
+}
+
+.site-particle-field span:nth-child(1)  { --px: 8%;  --py: 24%; --ps: 2px; --pd: 6s;  --pdelay: -1s; }
+.site-particle-field span:nth-child(2)  { --px: 17%; --py: 68%; --ps: 3px; --pd: 8s;  --pdelay: -4s; }
+.site-particle-field span:nth-child(3)  { --px: 28%; --py: 32%; --ps: 2px; --pd: 7s;  --pdelay: -2s; }
+.site-particle-field span:nth-child(4)  { --px: 39%; --py: 78%; --ps: 3px; --pd: 9s;  --pdelay: -6s; }
+.site-particle-field span:nth-child(5)  { --px: 48%; --py: 18%; --ps: 2px; --pd: 6.5s;--pdelay: -3s; }
+.site-particle-field span:nth-child(6)  { --px: 56%; --py: 64%; --ps: 3px; --pd: 8.5s;--pdelay: -5s; }
+.site-particle-field span:nth-child(7)  { --px: 64%; --py: 27%; --ps: 2px; --pd: 7.5s;--pdelay: -1.5s; }
+.site-particle-field span:nth-child(8)  { --px: 72%; --py: 78%; --ps: 3px; --pd: 9.5s;--pdelay: -7s; }
+.site-particle-field span:nth-child(9)  { --px: 81%; --py: 17%; --ps: 2px; --pd: 6s;  --pdelay: -2.5s; }
+.site-particle-field span:nth-child(10) { --px: 91%; --py: 52%; --ps: 3px; --pd: 8s;  --pdelay: -4.5s; }
+.site-particle-field span:nth-child(11) { --px: 12%; --py: 45%; --ps: 2px; --pd: 7s;  --pdelay: -5.5s; }
+.site-particle-field span:nth-child(12) { --px: 34%; --py: 12%; --ps: 3px; --pd: 8.8s;--pdelay: -2s; }
+.site-particle-field span:nth-child(13) { --px: 44%; --py: 54%; --ps: 2px; --pd: 6.8s;--pdelay: -6.5s; }
+.site-particle-field span:nth-child(14) { --px: 69%; --py: 48%; --ps: 3px; --pd: 9s;  --pdelay: -3.5s; }
+.site-particle-field span:nth-child(15) { --px: 77%; --py: 88%; --ps: 2px; --pd: 7.8s;--pdelay: -1.8s; }
+.site-particle-field span:nth-child(16) { --px: 87%; --py: 32%; --ps: 3px; --pd: 8.6s;--pdelay: -5.8s; }
+.site-particle-field span:nth-child(17) { --px: 23%; --py: 88%; --ps: 2px; --pd: 6.6s;--pdelay: -3.2s; }
+.site-particle-field span:nth-child(18) { --px: 59%; --py: 40%; --ps: 2px; --pd: 7.2s;--pdelay: -4.2s; }
+
+/* Keep the particles behind interactive UI while still above the page background. */
+.navbar, main, section, footer { position: relative; z-index: 4; }
+
+/* Login gets the same premium pill treatment as Get Started. */
+.nav-links a.nav-login-button {
+    background: var(--olive);
+    color: #10120d !important;
+    font-weight: 700;
+    padding: 11px 20px;
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(139, 155, 98, .14);
+}
+
+.nav-links a.nav-login-button:hover {
+    color: #10120d !important;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 28px rgba(139, 155, 98, .22);
+}
+
+@media (max-width: 700px) {
+    .site-particle-field { opacity: .52; }
+    .site-particle-field span { box-shadow: 0 0 8px rgba(181, 200, 137, .38); }
+
+    .nav-links a.nav-login-button,
+    .nav-links a.nav-button {
+        width: auto;
+        min-width: 125px;
+        text-align: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .site-particle-field span { animation: none !important; opacity: .35; }
+    .nav-links a.nav-login-button { transition: none; }
+}
+
+/* FINAL NAVBAR BEHAVIOUR */
+.navbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important;
+}
+
+.nav-links a.nav-logout-button {
+    background: rgba(255,255,255,.07);
+    color: #dfe5d8 !important;
+    border: 1px solid rgba(255,255,255,.12);
+    padding: 11px 20px;
+    border-radius: 30px;
+    font-weight: 700;
+    box-shadow: 0 8px 24px rgba(0,0,0,.12);
+}
+
+.nav-links a.nav-logout-button:hover {
+    background: rgba(190,110,110,.18);
+    border-color: rgba(230,155,155,.35);
+    color: #f2c5c5 !important;
+    transform: translateY(-2px);
+}
+
+@media (max-width:700px) {
+    .nav-links a.nav-logout-button {
+        width: 100% !important;
+        text-align: center !important;
+    }
+}

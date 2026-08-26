@@ -47,13 +47,13 @@ $base_path = $base_path ?? '';
 
             <?php endif; ?>
 
-            <a href="<?php echo $base_path; ?>auth/logout.php">
+            <a href="<?php echo $base_path; ?>auth/logout.php" class="nav-button nav-logout-button">
                 Logout
             </a>
 
         <?php else: ?>
 
-            <a href="<?php echo $base_path; ?>auth/login.php">
+            <a href="<?php echo $base_path; ?>auth/login.php" class="nav-button nav-login-button">
                 Login
             </a>
 
@@ -66,6 +66,14 @@ $base_path = $base_path ?? '';
     </div>
 
 </nav>
+
+<!-- Global foreground particles. Hidden on the home hero because the hero has its own particle field. -->
+<div class="site-particle-field" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span><span></span><span></span>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", function () {
