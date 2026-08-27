@@ -2188,6 +2188,13 @@ body:has(.home-hero) .hero-particle-field { display: none; }
 
 /* Profile avatar, shown next to Logout in the navbar. */
 .nav-avatar-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.nav-avatar-circle {
     width: 38px;
     height: 38px;
     border-radius: 50%;
@@ -2196,14 +2203,14 @@ body:has(.home-hero) .hero-particle-field { display: none; }
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
-    border: 2px solid rgba(181,200,137,.55);
-    box-shadow: 0 0 12px rgba(181,200,137,.35);
+    border: 1px solid rgba(181,200,137,.55);
+    box-shadow: 0 0 10px rgba(181,200,137,.3);
     transition: transform .2s ease, box-shadow .2s ease;
 }
 
-.nav-avatar-link:hover {
+.nav-avatar-link:hover .nav-avatar-circle {
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 0 18px rgba(181,200,137,.55);
+    box-shadow: 0 0 16px rgba(181,200,137,.5);
 }
 
 .nav-avatar-img {
@@ -2221,17 +2228,29 @@ body:has(.home-hero) .hero-particle-field { display: none; }
     background: linear-gradient(135deg,#8b9b62,#26301d);
     color: #10120d;
     font-weight: 800;
-    font-size: 15px;
+    font-size: 14px;
+}
+
+.nav-avatar-label {
+    display: none;
 }
 
 @media (max-width: 700px) {
     .nav-links a.nav-avatar-link {
-        display: inline-flex !important;
-        width: 42px;
-        height: 42px;
-        padding: 0 !important;
-        align-self: center;
-        margin: 2px 0;
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        padding: 8px 14px !important;
+        text-align: left;
+    }
+    .nav-avatar-circle {
+        width: 30px;
+        height: 30px;
+    }
+    .nav-avatar-label {
+        display: inline-block;
+        font-size: 12px;
     }
 }
 
@@ -2289,9 +2308,10 @@ body:has(.home-hero) .hero-particle-field { display: none; }
 }
 
 .nav-links a.nav-logout-button:hover {
-    background: rgba(190,110,110,.18);
-    border-color: rgba(230,155,155,.35);
-    color: #f2c5c5 !important;
+    background: rgba(220,60,60,.22);
+    border-color: rgba(255,90,90,.65);
+    color: #ffd6d6 !important;
+    box-shadow: 0 0 18px rgba(255,70,70,.55), 0 0 36px rgba(255,70,70,.3);
     transform: translateY(-2px);
 }
 
@@ -2300,4 +2320,8 @@ body:has(.home-hero) .hero-particle-field { display: none; }
         width: 100% !important;
         text-align: center !important;
     }
+
+    /* Keep Profile just above Logout, with Logout always last in the mobile menu. */
+    .nav-links a.nav-avatar-link { order: 8; }
+    .nav-links a.nav-logout-button { order: 9; }
 }
