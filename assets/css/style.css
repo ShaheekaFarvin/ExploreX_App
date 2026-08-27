@@ -2105,7 +2105,7 @@ body.auth-page .form-row { gap:12px; }
 .site-particle-field {
     position: fixed;
     inset: 0;
-    z-index: 3;
+    z-index: 5;
     pointer-events: none;
     overflow: hidden;
     opacity: .72;
@@ -2185,6 +2185,55 @@ body:has(.home-hero) .hero-particle-field { display: none; }
 
 /* Keep the particles behind interactive UI while still above the page background. */
 .navbar, main, section, footer { position: relative; z-index: 4; }
+
+/* Profile avatar, shown next to Logout in the navbar. */
+.nav-avatar-link {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border: 2px solid rgba(181,200,137,.55);
+    box-shadow: 0 0 12px rgba(181,200,137,.35);
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.nav-avatar-link:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 0 18px rgba(181,200,137,.55);
+}
+
+.nav-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.nav-avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg,#8b9b62,#26301d);
+    color: #10120d;
+    font-weight: 800;
+    font-size: 15px;
+}
+
+@media (max-width: 700px) {
+    .nav-links a.nav-avatar-link {
+        display: inline-flex !important;
+        width: 42px;
+        height: 42px;
+        padding: 0 !important;
+        align-self: center;
+        margin: 2px 0;
+    }
+}
 
 /* Login gets the same premium pill treatment as Get Started. */
 .nav-links a.nav-login-button {

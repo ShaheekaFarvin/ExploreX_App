@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } else {
 
         $stmt = $conn->prepare(
-            "SELECT user_id, name, email, password, role
+            "SELECT user_id, name, email, password, role, profile_photo
              FROM users
              WHERE email = ?
              LIMIT 1"
@@ -65,6 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                     $_SESSION["name"] = $user["name"];
                     $_SESSION["email"] = $user["email"];
                     $_SESSION["role"] = $user["role"];
+                    $_SESSION["profile_photo"] = $user["profile_photo"] ?? "";
 
                     // Keep the two user types completely separate.
                     if ($user["role"] === "ADMIN") {

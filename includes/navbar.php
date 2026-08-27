@@ -47,6 +47,16 @@ $base_path = $base_path ?? '';
 
             <?php endif; ?>
 
+            <?php if (($_SESSION["role"] ?? "") !== "ADMIN"): ?>
+                <a href="<?php echo $base_path; ?>pages/profile.php" class="nav-avatar-link" title="My Profile">
+                    <?php if (!empty($_SESSION["profile_photo"])): ?>
+                        <img src="<?php echo $base_path . htmlspecialchars($_SESSION["profile_photo"]); ?>" alt="My profile" class="nav-avatar-img">
+                    <?php else: ?>
+                        <span class="nav-avatar-fallback"><?php echo strtoupper(substr($_SESSION["name"] ?? "U", 0, 1)); ?></span>
+                    <?php endif; ?>
+                </a>
+            <?php endif; ?>
+
             <a href="<?php echo $base_path; ?>auth/logout.php" class="nav-button nav-logout-button">
                 Logout
             </a>
